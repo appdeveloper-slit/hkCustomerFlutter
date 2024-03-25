@@ -1,13 +1,13 @@
 // ignore_for_file: prefer_const_constructors
 
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:hk/values/colors.dart';
 import 'package:hk/values/dimens.dart';
 import 'package:hk/values/styles.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
-
 import '../auth/login.dart';
 import '../manage/static_method.dart';
 
@@ -50,11 +50,11 @@ class _slidersState extends State<sliders> {
   Widget build(BuildContext context) {
     ctx = context;
     return Scaffold(
-        backgroundColor: Clr().background,
-        appBar: AppBar(
-          backgroundColor: Clr().background,
-          actions: [
-            GestureDetector(
+        backgroundColor: Theme.of(ctx).colorScheme.background,
+        body: Column(
+          children: [
+            SizedBox(height: Dim().d52,),
+                   GestureDetector(
               onTap: () async {
                 SharedPreferences sp = await SharedPreferences.getInstance();
                 if (_selectIndex == 2) {
@@ -64,39 +64,58 @@ class _slidersState extends State<sliders> {
                   });
                 }
               },
-              child: Row(
+              child: Row(mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   Text(
                     _selectIndex == 2 ? 'Next' : 'Skip',
                     style: nunitaSty().smalltext.copyWith(
                           fontWeight: FontWeight.w600,
+                          color: Theme.of(ctx).colorScheme.primary,
                         ),
                   ),
                   SvgPicture.asset(
                     'assets/arrow_right.svg',
+                    color: Theme.of(ctx).colorScheme.primary,
                   ),
                   SizedBox(
                     width: Dim().d20,
                   ),
                 ],
               ),
-            )
-          ],
-        ),
-        body: PageView.builder(
-          physics: const BouncingScrollPhysics(),
+            ),
+            Expanded(
+              child: SizedBox(
+                height: 500.0,
+                child: PageView.builder(
+                  physics: const BouncingScrollPhysics(),
+                  controller: controller,
+                  scrollDirection: Axis.horizontal,
+                  onPageChanged: (int index) {
+                    setState(() {
+                      _selectIndex = index;
+                    });
+                    print(_selectIndex);
+                  },
+                  itemCount: pageList.length,
+                  itemBuilder: (context, index) {
+                    return sliderPage(index, pageList[index]);
+                  },
+                ),
+              ),
+            ),
+            SmoothPageIndicator(
           controller: controller,
-          scrollDirection: Axis.horizontal,
-          onPageChanged: (int index) {
-            setState(() {
-              _selectIndex = index;
-            });
-            print(_selectIndex);
-          },
-          itemCount: pageList.length,
-          itemBuilder: (context, index) {
-            return sliderPage(index, pageList[index]);
-          },
+          count: pageList.length,
+          effect: ExpandingDotsEffect(
+              dotHeight: 8.0,
+              dotWidth: 8.0,
+              dotColor: Clr().hintColor.withOpacity(0.4),
+              activeDotColor: Clr().primaryColor,
+              expansionFactor: 3.0,
+              spacing: 2.0),
+        ),
+        SizedBox(height: Dim().d120,),
+          ],
         ));
   }
 
@@ -138,23 +157,11 @@ class _slidersState extends State<sliders> {
             textAlign: TextAlign.center,
             style: nunitaSty().microText.copyWith(
                   fontWeight: FontWeight.w400,
+                  color: Theme.of(ctx).colorScheme.primary,
                 ),
           ),
         ),
-        SmoothPageIndicator(
-          controller: controller,
-          count: pageList.length,
-          effect: ExpandingDotsEffect(
-              dotHeight: 6.0,
-              dotWidth: 6.0,
-              dotColor: Clr().hintColor.withOpacity(0.4),
-              activeDotColor: Clr().primaryColor,
-              expansionFactor: 3.0,
-              spacing: 2.0),
-        ),
-        SizedBox(
-          height: Dim().d32,
-        ),
+      
       ],
     );
   }

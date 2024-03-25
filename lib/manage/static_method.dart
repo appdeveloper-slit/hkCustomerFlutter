@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:flutter/widgets.dart';
 import 'package:http/http.dart' as http;
 
 // import 'package:connectivity_plus/connectivity_plus.dart';
@@ -78,6 +79,7 @@ class STM {
 
   void successsDialog(context, message, widget) {
     AwesomeDialog(
+            dialogBackgroundColor: Clr().white,
             dismissOnBackKeyPress: false,
             dismissOnTouchOutside: false,
             context: context,
@@ -115,6 +117,7 @@ class STM {
   void successsDialogWithAffinity(
       BuildContext context, String message, Widget widget) {
     AwesomeDialog(
+            dialogBackgroundColor: Clr().white,
             dismissOnBackKeyPress: false,
             dismissOnTouchOutside: false,
             context: context,
@@ -140,6 +143,7 @@ class STM {
   void successsDialogWithReplace(
       BuildContext context, String message, Widget widget) {
     AwesomeDialog(
+            dialogBackgroundColor: Clr().white,
             dismissOnBackKeyPress: false,
             dismissOnTouchOutside: false,
             context: context,
@@ -163,18 +167,52 @@ class STM {
 
   void errorDialog(BuildContext context, String message) {
     AwesomeDialog(
-            context: context,
-            dismissOnBackKeyPress: false,
-            dismissOnTouchOutside: false,
-            dialogType: DialogType.error,
-            animType: AnimType.scale,
-            headerAnimationLoop: true,
-            title: 'Note',
-            desc: message,
-            btnOkText: "OK",
-            btnOkOnPress: () {},
-            btnOkColor: Clr().errorRed)
-        .show();
+        dialogBackgroundColor: Theme.of(context).colorScheme.background,
+        context: context,
+        dismissOnBackKeyPress: false,
+        dismissOnTouchOutside: false,
+        dialogType: DialogType.noHeader,
+        animType: AnimType.scale,
+        headerAnimationLoop: true,
+        body: Padding(
+          padding: EdgeInsets.symmetric(horizontal: Dim().d12),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text('Error',
+                  textAlign: TextAlign.left,
+                  style: nunitaSty().mediumText.copyWith(
+                      color: Clr().errorRed, fontWeight: FontWeight.w600)),
+              SizedBox(
+                height: Dim().d8,
+              ),
+              Text(message,
+                  style: nunitaSty()
+                      .smalltext
+                      .copyWith(color: Theme.of(context).colorScheme.primary)),
+              SizedBox(
+                height: Dim().d16,
+              ),
+              Align(
+                alignment: Alignment.centerRight,
+                child: InkWell(
+                    onTap: () {
+                      STM().back2Previous(context);
+                    },
+                    child: Text(
+                      'ok',
+                      style: nunitaSty().smalltext.copyWith(
+                          color: Clr().primaryColor,
+                          fontWeight: FontWeight.w600),
+                      textAlign: TextAlign.right,
+                    )),
+              ),
+              SizedBox(
+                height: Dim().d16,
+              ),
+            ],
+          ),
+        )).show();
   }
 
   void errorDialogWithReplace(
@@ -241,6 +279,7 @@ class STM {
 
   AwesomeDialog loadingDialog(BuildContext context, String title) {
     AwesomeDialog dialog = AwesomeDialog(
+      dialogBackgroundColor: Clr().white,
       width: 250,
       context: context,
       dismissOnBackKeyPress: true,
@@ -263,7 +302,8 @@ class STM {
             children: [
               Padding(
                 padding: EdgeInsets.all(Dim().d12),
-                child: SpinKitSquareCircle(
+                child: SpinKitRing(
+                  lineWidth: 5.0,
                   color: Clr().primaryColor,
                 ),
               ),
@@ -286,6 +326,25 @@ class STM {
       ),
     );
     return dialog;
+  }
+
+  /// Date Picker
+  Future<String> datePicker(ctx) async {
+    DateTime? picked = await showDatePicker(
+      context: ctx,
+      builder: (context, child) {
+        return Theme(
+          data: ThemeData(
+            colorScheme: ColorScheme.light(primary: Clr().primaryColor),
+          ),
+          child: child!,
+        );
+      },
+      initialDate: DateTime.now(),
+      firstDate: DateTime(1900),
+      lastDate: DateTime.now(),
+    );
+    return STM().dateFormat('yyyy-MM-dd', picked);
   }
 
   Widget sb({
@@ -634,42 +693,23 @@ class STM {
     load == true ? dialog.show() : null;
     String url = AppUrl.mainUrl + apiname;
     String url1 = 'https://api.emptra.com/$apiname';
-    var header = {
-      'Content-Type': 'application/json',
-    };
-    var tokenHeader = {
+    var headers = {
       "Content-Type": "application/json",
       "responseType": "ResponseType.plain",
-      "Authorization": "Bearer $token",
-    };
-    var header1 = {
-      HttpHeaders.contentTypeHeader: "application/json",
-      'clientId':
-          'c38b822dff470d4cb0a2b1734d581ef2:1da3078a5a55a7e582faa288017a796f',
-      'secretKey':
-          'M9y8lKJV5hxJVpGE219m4oN0ZoIAodrDPItIjNCxaUkB75gy8pdiXfzvKLJs9vuQn',
     };
 
     dynamic result;
     try {
       final response = type == 'post'
-          ? await http
-              .post(
-                Uri.parse(apitype == 'checkKyc' ? url1 : url),
-                body: json.encode(body),
-                headers: apitype == 'checkKyc'
-                    ? header1
-                    : token != null
-                        ? tokenHeader
-                        : header,
-              )
-              .timeout(const Duration(seconds: 500))
-          : await http
-              .get(
-                Uri.parse(url),
-                headers: token != null ? tokenHeader : header,
-              )
-              .timeout(const Duration(seconds: 500));
+          ? await http.post(
+              Uri.parse(apitype == 'checkKyc' ? url1 : url),
+              body: json.encode(body),
+              headers: headers,
+            )
+          : await http.get(
+              Uri.parse(url),
+              headers: headers,
+            );
       if (response.statusCode == 200) {
         print(response.body);
         try {

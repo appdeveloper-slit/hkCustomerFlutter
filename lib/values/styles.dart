@@ -165,18 +165,18 @@ class nunitaSty {
         color: Clr().black,
         width: 0.1,
       ),
-      borderRadius: BorderRadius.circular(
-        Dim().d12,
-      ),
+      // borderRadius: BorderRadius.circular(
+      //   Dim().d12,
+      // ),
     ),
     focusedBorder: OutlineInputBorder(
       borderSide: BorderSide(
         color: Clr().black,
         width: 0.1,
       ),
-      borderRadius: BorderRadius.circular(
-        Dim().d12,
-      ),
+      // borderRadius: BorderRadius.circular(
+      //   Dim().d12,
+      // ),
     ),
     errorBorder: OutlineInputBorder(
       borderSide: BorderSide(
@@ -323,7 +323,6 @@ class nunitaSty {
   );
 
   ButtonStyle primaryButton = ElevatedButton.styleFrom(
-    primary: Clr().primaryColor,
     padding: EdgeInsets.symmetric(
       vertical: Dim().d12,
     ),
@@ -335,7 +334,6 @@ class nunitaSty {
   );
 
   ButtonStyle primaryButton2 = ElevatedButton.styleFrom(
-    primary: Clr().accentColor,
     padding: EdgeInsets.symmetric(
       vertical: Dim().d12,
     ),
@@ -347,7 +345,6 @@ class nunitaSty {
   );
 
   ButtonStyle whiteButton = ElevatedButton.styleFrom(
-    primary: Clr().white,
     padding: EdgeInsets.symmetric(
       vertical: Dim().d4,
       horizontal: Dim().d20,

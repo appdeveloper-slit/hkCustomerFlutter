@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hk/auth/login.dart';
+import 'package:hk/theme/theme.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'firstSliderPages/sliders.dart';
@@ -18,9 +19,10 @@ void main() async {
             child: child!);
       },
       debugShowCheckedModeBanner: false,
-      theme: ThemeData.light(),
-      darkTheme: ThemeData.dark(),
-      home: checkSlider ? loginPage() : sliders(),
+      theme: lightMode,
+      darkTheme: darkMode,
+      home: sliders(),
+      // checkSlider ? loginPage() : sliders(),
     ),
   );
 }

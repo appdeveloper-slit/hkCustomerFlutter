@@ -38,9 +38,13 @@ dependencies:
   cached_network_image:
   url_launcher:
   intl:
+  http:
   fluttertoast:
   flutter_spinkit:
   smooth_page_indicator: 
+  pin_code_fields:
+  flutter_google_places:
+  geocoding:
 
 dev_dependencies:
   flutter_test:
