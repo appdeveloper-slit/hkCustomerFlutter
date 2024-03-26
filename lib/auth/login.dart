@@ -7,6 +7,7 @@ import 'package:hk/values/dimens.dart';
 import 'package:hk/values/styles.dart';
 
 import '../manage/static_method.dart';
+import 'authapi.dart';
 
 class loginPage extends StatefulWidget {
   const loginPage({super.key});
@@ -41,17 +42,19 @@ class _loginPageState extends State<loginPage> {
                 alignment: Alignment.center,
                 child: Text('Welcome Back',
                     textAlign: TextAlign.center,
-                    style: nunitaSty()
-                        .extraLargeText
-                        .copyWith(fontWeight: FontWeight.w700,color: Theme.of(ctx).colorScheme.primary,)),
+                    style: nunitaSty().extraLargeText.copyWith(
+                          fontWeight: FontWeight.w700,
+                          color: Theme.of(ctx).colorScheme.primary,
+                        )),
               ),
               SizedBox(
                 height: Dim().d40,
               ),
               Text('Mobile Number',
-                  style: nunitaSty()
-                      .mediumText
-                      .copyWith(fontWeight: FontWeight.w400,color: Theme.of(ctx).colorScheme.primary,)),
+                  style: nunitaSty().mediumText.copyWith(
+                        fontWeight: FontWeight.w400,
+                        color: Theme.of(ctx).colorScheme.primary,
+                      )),
               // ignore: prefer_const_constructors
               SizedBox(
                 height: 4.0,
@@ -94,8 +97,8 @@ class _loginPageState extends State<loginPage> {
                 borderRadius: BorderRadius.all(Radius.circular(Dim().d4)),
                 pressEvent: () {
                   if (_formKey.currentState!.validate()) {
-
-                }
+                    authapi().sendOTPApi(ctx, _mobileCtrl.text, 'login');
+                  }
                 },
                 text: 'Send OTP',
                 buttonTextStyle: nunitaSty().mediumText.copyWith(
@@ -116,15 +119,19 @@ class _loginPageState extends State<loginPage> {
                               color: Theme.of(ctx).colorScheme.primary,
                             ),
                         children: [
-                     WidgetSpan(child: InkWell(
-                        onTap: () {
-                          STM().redirect2page(ctx, const signUpPage());
-                        },
-                        child: Text('Sign Up',style: nunitaSty().smalltext.copyWith(
-                                fontWeight: FontWeight.w400,
-                                color: Clr().secondary,
-                              ),),
-                      ),
+                      WidgetSpan(
+                        child: InkWell(
+                          onTap: () {
+                            STM().redirect2page(ctx, const signUpPage());
+                          },
+                          child: Text(
+                            'Sign Up',
+                            style: nunitaSty().smalltext.copyWith(
+                                  fontWeight: FontWeight.w400,
+                                  color: Clr().secondary,
+                                ),
+                          ),
+                        ),
                       )
                     ])),
               )

@@ -9,8 +9,8 @@ import '../values/colors.dart';
 import '../values/dimens.dart';
 
 class verificationPage extends StatefulWidget {
-  final sMobile;
-  const verificationPage({super.key, this.sMobile});
+  final sMobile, type;
+  const verificationPage({super.key, this.sMobile, this.type});
 
   @override
   State<verificationPage> createState() => _verificationPageState();
@@ -50,15 +50,17 @@ class _verificationPageState extends State<verificationPage> {
               RichText(
                   text: TextSpan(
                       text: "Enter the OTP send on ",
-                      style: nunitaSty()
-                          .smalltext
-                          .copyWith(fontWeight: FontWeight.w400,color: Theme.of(ctx).colorScheme.primary,),
+                      style: nunitaSty().smalltext.copyWith(
+                            fontWeight: FontWeight.w400,
+                            color: Theme.of(ctx).colorScheme.primary,
+                          ),
                       children: [
                     TextSpan(
                       text: '+91 ${widget.sMobile}',
-                      style: nunitaSty()
-                          .smalltext
-                          .copyWith(fontWeight: FontWeight.w400,color: Theme.of(ctx).colorScheme.primary,),
+                      style: nunitaSty().smalltext.copyWith(
+                            fontWeight: FontWeight.w400,
+                            color: Theme.of(ctx).colorScheme.primary,
+                          ),
                     ),
                   ])),
               SizedBox(
@@ -115,8 +117,9 @@ class _verificationPageState extends State<verificationPage> {
                         ? "Resend OTP in "
                         : "I didn't receive a code! ",
                     style: nunitaSty().smalltext.copyWith(
-                          color:
-                              again == false ? Clr().primaryColor : Theme.of(ctx).colorScheme.primary,
+                          color: again == false
+                              ? Clr().primaryColor
+                              : Theme.of(ctx).colorScheme.primary,
                           fontWeight: again == false
                               ? FontWeight.w400
                               : FontWeight.w500,
@@ -187,8 +190,8 @@ class _verificationPageState extends State<verificationPage> {
                   STM().checkInternet(ctx, widget).then((value) {
                     if (value) {
                       if (_formKey.currentState!.validate()) {
-                        authapi().verifyOtp(
-                            ctx, otpCtrl.text, widget.sMobile, 'register');
+                        authapi().verifyOtp(ctx, otpCtrl.text, widget.sMobile,
+                            widget.type, setState);
                       }
                     }
                   });

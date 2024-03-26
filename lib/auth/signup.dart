@@ -44,15 +44,18 @@ class _signUpPageState extends State<signUpPage> {
                 child: Text('Sign Up',
                     textAlign: TextAlign.center,
                     style: nunitaSty().extraLargeText.copyWith(
-                        fontWeight: FontWeight.w700, color: Theme.of(ctx).colorScheme.primary,)),
+                          fontWeight: FontWeight.w700,
+                          color: Theme.of(ctx).colorScheme.primary,
+                        )),
               ),
               SizedBox(
                 height: Dim().d40,
               ),
               Text('Mobile Number',
-                  style: nunitaSty()
-                      .mediumText
-                      .copyWith(fontWeight: FontWeight.w400,color: Theme.of(ctx).colorScheme.primary,)),
+                  style: nunitaSty().mediumText.copyWith(
+                        fontWeight: FontWeight.w400,
+                        color: Theme.of(ctx).colorScheme.primary,
+                      )),
               // ignore: prefer_const_constructors
               SizedBox(
                 height: 4.0,
@@ -97,7 +100,7 @@ class _signUpPageState extends State<signUpPage> {
                   STM().checkInternet(ctx, widget).then((value) {
                     if (value) {
                       if (_formKey.currentState!.validate()) {
-                        authapi().sendOTPApi(ctx, _mobileCtrl.text);
+                        authapi().sendOTPApi(ctx, _mobileCtrl.text, 'register');
                       }
                     }
                   });

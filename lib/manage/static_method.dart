@@ -819,4 +819,23 @@ class STM {
       }
     }
   }
+
+  imageChecks(imageUrl) async {
+    final response = await http.get(Uri.parse(imageUrl));
+    if (response.statusCode == 200) {
+      return SvgPicture.network(
+        imageUrl,
+        fit: BoxFit.cover,
+        height: Dim().d40,
+        width: Dim().d40,
+      );
+    } else {
+      return Image.network(
+        'https://daluscapital.com/wp-content/uploads/2016/04/dummy-post-square-1-1.jpg',
+        fit: BoxFit.cover,
+        height: Dim().d40,
+        width: Dim().d40,
+      );
+    }
+  }
 }

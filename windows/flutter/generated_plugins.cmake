@@ -4,7 +4,9 @@
 
 list(APPEND FLUTTER_PLUGIN_LIST
   connectivity_plus
+  maps_launcher
   rive_common
+  share_plus
   url_launcher_windows
 )
 

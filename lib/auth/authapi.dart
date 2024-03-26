@@ -6,7 +6,7 @@ import 'registerdetail.dart';
 import 'verification.dart';
 
 class authapi {
-  void sendOTPApi(ctx, num) async {
+  void sendOTPApi(ctx, num, type) async {
     var body = {
       'page_type': 'register',
       'mobile': num,
@@ -24,6 +24,7 @@ class authapi {
           ctx,
           verificationPage(
             sMobile: num,
+            type: type,
           ));
     } else {
       STM().errorDialog(ctx, result['message']);
@@ -48,7 +49,8 @@ class authapi {
     }
   }
 
-  void verifyOtp(ctx, otp, num, type) async {
+  void verifyOtp(ctx, otp, num, type, setState) async {
+    SharedPreferences sp = await SharedPreferences.getInstance();
     var body = {
       'page_type': type,
       'otp': otp,
@@ -62,6 +64,13 @@ class authapi {
         load: true,
         loadtitle: 'Verifying');
     if (result['error'] == false) {
+      if (type == 'login') {
+        setState(() {
+          sp.setBool('login', true);
+          sp.setString('userid', result['user_id'].toString());
+          STM().finishAffinity(ctx, const Home());
+        });
+      }
       STM().redirect2page(
           ctx,
           registerdetailPage(
@@ -97,6 +106,7 @@ class authapi {
     );
     if (result['error'] == false) {
       setState(() {
+        sp.setBool('login', true);
         sp.setString('userid', result['user_id'].toString());
         STM().successsDialogWithAffinity(ctx, result['message'], Home());
       });

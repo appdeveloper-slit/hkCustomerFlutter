@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:hk/homedirectory/home.dart';
 import 'package:hk/values/colors.dart';
 import 'package:hk/values/dimens.dart';
 import 'package:hk/values/styles.dart';
@@ -53,18 +54,19 @@ class _slidersState extends State<sliders> {
         backgroundColor: Theme.of(ctx).colorScheme.background,
         body: Column(
           children: [
-            SizedBox(height: Dim().d52,),
-                   GestureDetector(
+            SizedBox(
+              height: Dim().d52,
+            ),
+            GestureDetector(
               onTap: () async {
                 SharedPreferences sp = await SharedPreferences.getInstance();
-                if (_selectIndex == 2) {
-                  setState(() {
-                    sp.setBool('firstpage', true);
-                    STM().redirect2page(ctx, loginPage());
-                  });
-                }
+                setState(() {
+                  sp.setBool('firstpage', true);
+                  STM().finishAffinity(ctx, Home());
+                });
               },
-              child: Row(mainAxisAlignment: MainAxisAlignment.end,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   Text(
                     _selectIndex == 2 ? 'Next' : 'Skip',
@@ -104,17 +106,19 @@ class _slidersState extends State<sliders> {
               ),
             ),
             SmoothPageIndicator(
-          controller: controller,
-          count: pageList.length,
-          effect: ExpandingDotsEffect(
-              dotHeight: 8.0,
-              dotWidth: 8.0,
-              dotColor: Clr().hintColor.withOpacity(0.4),
-              activeDotColor: Clr().primaryColor,
-              expansionFactor: 3.0,
-              spacing: 2.0),
-        ),
-        SizedBox(height: Dim().d120,),
+              controller: controller,
+              count: pageList.length,
+              effect: ExpandingDotsEffect(
+                  dotHeight: 8.0,
+                  dotWidth: 8.0,
+                  dotColor: Clr().hintColor.withOpacity(0.4),
+                  activeDotColor: Clr().primaryColor,
+                  expansionFactor: 3.0,
+                  spacing: 2.0),
+            ),
+            SizedBox(
+              height: Dim().d120,
+            ),
           ],
         ));
   }
@@ -161,7 +165,6 @@ class _slidersState extends State<sliders> {
                 ),
           ),
         ),
-      
       ],
     );
   }

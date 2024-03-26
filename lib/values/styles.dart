@@ -388,7 +388,7 @@ class poppinsSty {
     fontFamily: name1,
     letterSpacing: 0.5,
     color: Clr().black,
-    fontSize: 18.0,
+    fontSize: 20.0,
     fontWeight: FontWeight.w700,
   );
   TextStyle extraLargeText = TextStyle(
