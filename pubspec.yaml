@@ -50,6 +50,7 @@ dependencies:
   double_back_to_close:
   share_plus:
   maps_launcher:
+  youtube_player_flutter:
 
 dev_dependencies:
   flutter_test:

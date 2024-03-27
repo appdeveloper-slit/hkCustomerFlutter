@@ -1,9 +1,12 @@
 import 'package:hk/manage/static_method.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 List sliderList = [];
 List serviceArryList = [];
 List videoList = [];
 List faqList = [];
+List tipsList = [];
+List notiList = [];
 var checkUserStaus, checkUpdate;
 
 class homeApiAuth {
@@ -29,6 +32,29 @@ class homeApiAuth {
         faqList = result['faqs_array'];
         checkUserStaus = result['is_active'];
         checkUpdate = result['update_type'];
+        tipsList = result['tips_array'];
+      });
+    } else {
+      STM().errorDialog(ctx, result['message']);
+    }
+  }
+
+  void notificationAuthApi(ctx, setState) async {
+    SharedPreferences sp = await SharedPreferences.getInstance();
+    var body = {
+      "user_id": sp.getString('userid'),
+    };
+    var result = await STM().allApi(
+      apiname: 'notification',
+      body: body,
+      ctx: ctx,
+      load: true,
+      loadtitle: 'Loading',
+      type: 'post',
+    );
+    if (result['error'] == false) {
+      setState(() {
+        notiList = result['result_array'];
       });
     } else {
       STM().errorDialog(ctx, result['message']);

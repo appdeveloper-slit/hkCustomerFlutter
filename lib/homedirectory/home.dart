@@ -3,7 +3,9 @@ import 'package:double_back_to_close/double_back_to_close.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:hk/auth/login.dart';
 import 'package:hk/homedirectory/homeapi.dart';
+import 'package:hk/homedirectory/videolayout.dart';
 import 'package:hk/manage/static_method.dart';
 import 'package:hk/values/colors.dart';
 import 'package:hk/values/dimens.dart';
@@ -12,6 +14,8 @@ import 'package:intl/intl.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'healthtips.dart';
+import 'notificationpage.dart';
 import 'sidedrawer.dart';
 
 List indexList = [];
@@ -32,12 +36,13 @@ class _HomeState extends State<Home> {
   getSession() async {
     SharedPreferences sp = await SharedPreferences.getInstance();
     setState(() {
-      userId = sp.getString('user_id');
+      userId = sp.getString('userid');
+      print(userId);
     });
     // ignore: use_build_context_synchronously
     homeApiAuth().homeApi(ctx, setState, [
       OneSignal.User.pushSubscription.id,
-      sp.getString('user_id'),
+      sp.getString('userid'),
       DateFormat('yyyy/MM/dd HH:mm:ss').format(DateTime.now()),
     ]);
   }
@@ -63,7 +68,9 @@ class _HomeState extends State<Home> {
             setState: setState,
             userExits: userId),
         appBar: AppBar(
-          backgroundColor: Theme.of(ctx).colorScheme.background,
+          backgroundColor: Theme.of(ctx).colorScheme.background == Clr().white
+              ? Clr().white
+              : Theme.of(ctx).colorScheme.background,
           elevation: 0,
           leading: InkWell(
             onTap: () {
@@ -99,13 +106,22 @@ class _HomeState extends State<Home> {
                     : Clr().primaryColor,
               ),
             ),
-            Padding(
-              padding: EdgeInsets.only(right: Dim().d16),
-              child: Icon(
-                Icons.notifications_sharp,
-                color: Theme.of(ctx).colorScheme.primary == Clr().white
-                    ? Clr().white
-                    : Clr().primaryColor,
+            InkWell(
+              onTap: () {
+                if (userId != null) {
+                  STM().redirect2page(ctx, const notificationPage());
+                } else {
+                  STM().redirect2page(ctx, const loginPage());
+                }
+              },
+              child: Padding(
+                padding: EdgeInsets.only(right: Dim().d16),
+                child: Icon(
+                  Icons.notifications_sharp,
+                  color: Theme.of(ctx).colorScheme.primary == Clr().white
+                      ? Clr().white
+                      : Clr().primaryColor,
+                ),
               ),
             )
           ],
@@ -158,8 +174,8 @@ class _HomeState extends State<Home> {
                 // ignore: prefer_const_constructors
                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 3,
-                  crossAxisSpacing: 4.0,
-                  mainAxisSpacing: 4.0,
+                  crossAxisSpacing: 12.0,
+                  mainAxisSpacing: 12.0,
                 ),
                 itemBuilder: (BuildContext context, int index) {
                   return GridItem(
@@ -171,38 +187,48 @@ class _HomeState extends State<Home> {
               SizedBox(
                 height: Dim().d20,
               ),
-              Container(
-                height: Dim().d56,
-                width: double.infinity,
-                padding: EdgeInsets.zero,
-                margin: EdgeInsets.zero,
-                decoration: BoxDecoration(
-                    color: Clr().white,
-                    image: const DecorationImage(
-                        image: AssetImage('assets/tips.png'),
-                        fit: BoxFit.cover)),
-                child: Padding(
-                  padding: EdgeInsets.symmetric(horizontal: Dim().d8),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        'Health Tips',
-                        style: poppinsSty().largeText.copyWith(
-                              fontWeight: FontWeight.w400,
-                            ),
+              InkWell(
+                onTap: () {
+                  STM().redirect2page(
+                    ctx,
+                    const healthtipsPage(),
+                  );
+                },
+                child: Container(
+                  height: Dim().d56,
+                  width: double.infinity,
+                  padding: EdgeInsets.zero,
+                  margin: EdgeInsets.zero,
+                  decoration: BoxDecoration(
+                      color: Clr().white,
+                      border: Border.all(
+                        color: Colors.black26,
+                        width: 0.6,
                       ),
-                      // ignore: prefer_const_constructors
-                      IconButton(
-                          onPressed: null,
-                          // ignore: prefer_const_constructors
-                          icon: Icon(
-                            Icons.arrow_forward_ios,
-                            color: Colors.pink,
-                            size: 20.0,
-                            weight: 330.0,
-                          )),
-                    ],
+                      image: const DecorationImage(
+                        image: AssetImage('assets/tips.png'),
+                        fit: BoxFit.fitWidth,
+                      )),
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(horizontal: Dim().d12),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          'Health Tips',
+                          style: poppinsSty().largeText.copyWith(
+                                fontWeight: FontWeight.w400,
+                              ),
+                        ),
+                        // ignore: prefer_const_constructors
+                        Icon(
+                          Icons.arrow_forward_ios,
+                          color: Colors.pink,
+                          size: 20.0,
+                          weight: 330.0,
+                        )
+                      ],
+                    ),
                   ),
                 ),
               ),
@@ -327,13 +353,17 @@ class GridItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      elevation: 1,
-      color: Theme.of(context).colorScheme.background == Clr().background
-          ? Clr().white
-          : Theme.of(context).colorScheme.background,
-      shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.all(Radius.circular(Dim().d8))),
+    return Container(
+      decoration: BoxDecoration(
+          color: Theme.of(context).colorScheme.background,
+          borderRadius: BorderRadius.all(Radius.circular(Dim().d12)),
+          boxShadow: [
+            BoxShadow(
+                blurRadius: 1,
+                spreadRadius: 1,
+                color: Colors.black12,
+                offset: Offset(0, 1))
+          ]),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
@@ -367,14 +397,33 @@ class videoItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: Dim().d120,
-      width: Dim().d200,
-      decoration: BoxDecoration(
-          borderRadius: BorderRadius.all(Radius.circular(Dim().d8)),
-          image:
-              DecorationImage(image: NetworkImage(image), fit: BoxFit.cover)),
-      child: Center(child: SvgPicture.asset('assets/play.svg')),
+    return InkWell(
+      onTap: () {
+        STM().redirect2page(
+            context,
+            VideossWidget(
+              id: video,
+            ));
+      },
+      child: Container(
+        height: Dim().d120,
+        width: Dim().d200,
+        decoration: BoxDecoration(
+            // ignore: prefer_const_literals_to_create_immutables
+            boxShadow: [
+              // ignore: prefer_const_constructors
+              BoxShadow(
+                color: Colors.black12,
+                spreadRadius: 1,
+                blurRadius: 1,
+              )
+            ],
+            color: Theme.of(context).colorScheme.background,
+            borderRadius: BorderRadius.all(Radius.circular(Dim().d8)),
+            image:
+                DecorationImage(image: NetworkImage(image), fit: BoxFit.cover)),
+        child: Center(child: SvgPicture.asset('assets/play.svg')),
+      ),
     );
   }
 }
@@ -387,56 +436,62 @@ class faqWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return StatefulBuilder(
       builder: (context, setState) {
-        return Card(
-          elevation: 1,
-          color: Theme.of(context).colorScheme.background,
-          shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.all(Radius.circular(Dim().d2))),
+        return Container(
+          margin: EdgeInsets.only(bottom: Dim().d12),
+          decoration: BoxDecoration(
+              color: Theme.of(context).colorScheme.background,
+              borderRadius: BorderRadius.all(Radius.circular(Dim().d12)),
+              boxShadow: [
+                BoxShadow(
+                    blurRadius: 1,
+                    spreadRadius: 1,
+                    color: Colors.black12,
+                    offset: Offset(0, 1))
+              ]),
           child: Padding(
             padding: EdgeInsets.all(Dim().d16),
             child: Column(
               children: [
-                Row(
-                  children: [
-                    Expanded(
-                      child: Text(
-                        qt,
-                        style: nunitaSty().smalltext.copyWith(
-                              fontWeight: FontWeight.w400,
-                              color: Theme.of(context).colorScheme.primary,
-                            ),
+                InkWell(
+                  onTap: () {
+                    if (indexList.contains(qt)) {
+                      setState(() {
+                        indexList.remove(qt);
+                      });
+                    } else {
+                      setState(() {
+                        indexList.add(qt);
+                      });
+                    }
+                  },
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: Text(
+                          qt,
+                          style: nunitaSty().smalltext.copyWith(
+                                fontWeight: FontWeight.w400,
+                                color: Theme.of(context).colorScheme.primary,
+                              ),
+                        ),
                       ),
-                    ),
-                    indexList.contains(qt)
-                        ? InkWell(
-                            onTap: () {
-                              if (indexList.contains(qt)) {
-                                setState(() {
-                                  indexList.remove(qt);
-                                });
-                              }
-                            },
-                            child: Icon(
+                      indexList.contains(qt)
+                          ? Icon(
                               Icons.keyboard_arrow_up_outlined,
                               color: Theme.of(context).colorScheme.primary,
-                            ),
-                          )
-                        : InkWell(
-                            onTap: () {
-                              setState(() {
-                                indexList.add(qt);
-                              });
-                            },
-                            child: Icon(
+                            )
+                          : Icon(
                               Icons.keyboard_arrow_down_outlined,
                               color: Theme.of(context).colorScheme.primary,
                             ),
-                          ),
-                  ],
+                    ],
+                  ),
                 ),
-                SizedBox(
-                  height: Dim().d12,
-                ),
+                indexList.contains(qt)
+                    ? SizedBox(
+                        height: Dim().d12,
+                      )
+                    : Container(),
                 indexList.contains(qt)
                     ? Text(
                         ans,

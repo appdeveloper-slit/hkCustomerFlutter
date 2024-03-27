@@ -8,7 +8,7 @@ import 'verification.dart';
 class authapi {
   void sendOTPApi(ctx, num, type) async {
     var body = {
-      'page_type': 'register',
+      'page_type': type,
       'mobile': num,
     };
     var result = await STM().allApi(
@@ -70,13 +70,14 @@ class authapi {
           sp.setString('userid', result['user_id'].toString());
           STM().finishAffinity(ctx, const Home());
         });
+      } else {
+        STM().redirect2page(
+            ctx,
+            registerdetailPage(
+              mobile: num,
+            ));
+        STM().displayToast(result['message']);
       }
-      STM().redirect2page(
-          ctx,
-          registerdetailPage(
-            mobile: num,
-          ));
-      STM().displayToast(result['message']);
     } else {
       STM().errorDialog(ctx, result['message']);
     }

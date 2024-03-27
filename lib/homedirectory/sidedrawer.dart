@@ -4,9 +4,11 @@ import 'package:hk/auth/login.dart';
 import 'package:hk/homedirectory/contact.dart';
 import 'package:hk/homedirectory/home.dart';
 import 'package:hk/manage/static_method.dart';
+import 'package:hk/profilelayout/profilepage.dart';
 import 'package:hk/values/dimens.dart';
 import 'package:hk/values/styles.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../values/colors.dart';
 import 'aboutus.dart';
 
@@ -56,7 +58,8 @@ Widget drawerLayout({scaffoldState, setState, ctx, userExits}) {
                   child: InkWell(
                     onTap: () {
                       setState(() {
-                        closeDrawer(ctx, Home(), scaffoldState, null, setState);
+                        closeDrawer(
+                            ctx, const Home(), scaffoldState, null, setState);
                       });
                     },
                     child: Row(
@@ -64,10 +67,10 @@ Widget drawerLayout({scaffoldState, setState, ctx, userExits}) {
                         SvgPicture.asset(
                           'assets/home.svg',
                           width: Dim().d24,
-                          color: Theme.of(ctx).colorScheme.primary ==
-                                  Clr().background
-                              ? Clr().white
-                              : Clr().primaryColor,
+                          color:
+                              Theme.of(ctx).colorScheme.primary == Clr().white
+                                  ? Clr().white
+                                  : Clr().primaryColor,
                         ),
                         SizedBox(
                           width: Dim().d20,
@@ -90,6 +93,7 @@ Widget drawerLayout({scaffoldState, setState, ctx, userExits}) {
                   child: InkWell(
                     onTap: () {
                       if (userExits != null) {
+                        STM().redirect2page(ctx, const profileLayPage());
                       } else {
                         STM().redirect2page(ctx, const loginPage());
                       }
@@ -99,10 +103,10 @@ Widget drawerLayout({scaffoldState, setState, ctx, userExits}) {
                         SvgPicture.asset(
                           'assets/profile.svg',
                           width: Dim().d24,
-                          color: Theme.of(ctx).colorScheme.primary ==
-                                  Clr().background
-                              ? Clr().white
-                              : Clr().primaryColor,
+                          color:
+                              Theme.of(ctx).colorScheme.primary == Clr().white
+                                  ? Clr().white
+                                  : Clr().primaryColor,
                         ),
                         SizedBox(
                           width: Dim().d20,
@@ -135,10 +139,10 @@ Widget drawerLayout({scaffoldState, setState, ctx, userExits}) {
                         SvgPicture.asset(
                           'assets/wallet.svg',
                           width: Dim().d24,
-                          color: Theme.of(ctx).colorScheme.primary ==
-                                  Clr().background
-                              ? Clr().white
-                              : Clr().primaryColor,
+                          color:
+                              Theme.of(ctx).colorScheme.primary == Clr().white
+                                  ? Clr().white
+                                  : Clr().primaryColor,
                         ),
                         SizedBox(
                           width: Dim().d20,
@@ -170,10 +174,10 @@ Widget drawerLayout({scaffoldState, setState, ctx, userExits}) {
                         SvgPicture.asset(
                           'assets/request.svg',
                           width: Dim().d24,
-                          color: Theme.of(ctx).colorScheme.primary ==
-                                  Clr().background
-                              ? Clr().white
-                              : Clr().primaryColor,
+                          color:
+                              Theme.of(ctx).colorScheme.primary == Clr().white
+                                  ? Clr().white
+                                  : Clr().primaryColor,
                         ),
                         SizedBox(
                           width: Dim().d20,
@@ -204,10 +208,10 @@ Widget drawerLayout({scaffoldState, setState, ctx, userExits}) {
                         SvgPicture.asset(
                           'assets/privacy.svg',
                           width: Dim().d24,
-                          color: Theme.of(ctx).colorScheme.primary ==
-                                  Clr().background
-                              ? Clr().white
-                              : Clr().primaryColor,
+                          color:
+                              Theme.of(ctx).colorScheme.primary == Clr().white
+                                  ? Clr().white
+                                  : Clr().primaryColor,
                         ),
                         SizedBox(
                           width: Dim().d20,
@@ -237,10 +241,10 @@ Widget drawerLayout({scaffoldState, setState, ctx, userExits}) {
                         SvgPicture.asset(
                           'assets/terms.svg',
                           width: Dim().d24,
-                          color: Theme.of(ctx).colorScheme.primary ==
-                                  Clr().background
-                              ? Clr().white
-                              : Clr().primaryColor,
+                          color:
+                              Theme.of(ctx).colorScheme.primary == Clr().white
+                                  ? Clr().white
+                                  : Clr().primaryColor,
                         ),
                         SizedBox(
                           width: Dim().d20,
@@ -271,10 +275,10 @@ Widget drawerLayout({scaffoldState, setState, ctx, userExits}) {
                         SvgPicture.asset(
                           'assets/refund.svg',
                           width: Dim().d24,
-                          color: Theme.of(ctx).colorScheme.primary ==
-                                  Clr().background
-                              ? Clr().white
-                              : Clr().primaryColor,
+                          color:
+                              Theme.of(ctx).colorScheme.primary == Clr().white
+                                  ? Clr().white
+                                  : Clr().primaryColor,
                         ),
                         SizedBox(
                           width: Dim().d20,
@@ -305,10 +309,10 @@ Widget drawerLayout({scaffoldState, setState, ctx, userExits}) {
                         SvgPicture.asset(
                           'assets/share.svg',
                           width: Dim().d24,
-                          color: Theme.of(ctx).colorScheme.primary ==
-                                  Clr().background
-                              ? Clr().white
-                              : Clr().primaryColor,
+                          color:
+                              Theme.of(ctx).colorScheme.primary == Clr().white
+                                  ? Clr().white
+                                  : Clr().primaryColor,
                         ),
                         SizedBox(
                           width: Dim().d20,
@@ -331,18 +335,18 @@ Widget drawerLayout({scaffoldState, setState, ctx, userExits}) {
                   ),
                   child: InkWell(
                     onTap: () {
-                      closeDrawer(
-                          ctx, AboutUsPage(), scaffoldState, null, setState);
+                      closeDrawer(ctx, const AboutUsPage(), scaffoldState, null,
+                          setState);
                     },
                     child: Row(
                       children: [
                         SvgPicture.asset(
                           'assets/aboutus.svg',
                           width: Dim().d24,
-                          color: Theme.of(ctx).colorScheme.primary ==
-                                  Clr().background
-                              ? Clr().white
-                              : Clr().primaryColor,
+                          color:
+                              Theme.of(ctx).colorScheme.primary == Clr().white
+                                  ? Clr().white
+                                  : Clr().primaryColor,
                         ),
                         SizedBox(
                           width: Dim().d20,
@@ -372,10 +376,10 @@ Widget drawerLayout({scaffoldState, setState, ctx, userExits}) {
                         SvgPicture.asset(
                           'assets/contactus.svg',
                           width: Dim().d24,
-                          color: Theme.of(ctx).colorScheme.primary ==
-                                  Clr().background
-                              ? Clr().white
-                              : Clr().primaryColor,
+                          color:
+                              Theme.of(ctx).colorScheme.primary == Clr().white
+                                  ? Clr().white
+                                  : Clr().primaryColor,
                         ),
                         SizedBox(
                           width: Dim().d20,
@@ -398,14 +402,22 @@ Widget drawerLayout({scaffoldState, setState, ctx, userExits}) {
                           vertical: Dim().d28,
                         ),
                         child: InkWell(
-                          onTap: () {},
+                          onTap: () async {
+                            SharedPreferences sp =
+                                await SharedPreferences.getInstance();
+                            setState(() {
+                              sp.remove('login');
+                              sp.remove('userid');
+                              STM().finishAffinity(ctx, const loginPage());
+                            });
+                          },
                           child: Row(
                             children: [
                               SvgPicture.asset(
                                 'assets/logout.svg',
                                 width: Dim().d24,
                                 color: Theme.of(ctx).colorScheme.primary ==
-                                        Clr().background
+                                        Clr().white
                                     ? Clr().white
                                     : Clr().primaryColor,
                               ),

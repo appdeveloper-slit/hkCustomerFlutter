@@ -4,7 +4,7 @@ import 'package:hk/values/colors.dart';
 ThemeData lightMode = ThemeData(
     brightness: Brightness.light,
     colorScheme: ColorScheme.light(
-      background: Clr().background,
+      background: Clr().white,
       primary: Clr().black,
     ));
 

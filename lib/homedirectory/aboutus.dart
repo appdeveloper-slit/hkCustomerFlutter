@@ -27,7 +27,7 @@ class _AboutUsPageState extends State<AboutUsPage> {
           },
           child: Icon(
             Icons.arrow_back,
-            color: Theme.of(ctx).colorScheme.primary == Clr().background
+            color: Theme.of(ctx).colorScheme.primary == Clr().white
                 ? Clr().primaryColor
                 : Theme.of(ctx).colorScheme.primary,
           ),
@@ -36,7 +36,7 @@ class _AboutUsPageState extends State<AboutUsPage> {
         title: Text(
           'About Us',
           style: nunitaSty().smalltext.copyWith(
-                color: Theme.of(ctx).colorScheme.primary == Clr().background
+                color: Theme.of(ctx).colorScheme.primary == Clr().white
                     ? Clr().primaryColor
                     : Theme.of(ctx).colorScheme.primary,
                 fontWeight: FontWeight.w400,
