@@ -32,6 +32,7 @@ class _notificationPageState extends State<notificationPage> {
 
   @override
   Widget build(BuildContext context) {
+    
     ctx = context;
     return Scaffold(
       backgroundColor: Theme.of(ctx).colorScheme.background,

@@ -9,6 +9,7 @@ import 'package:hk/values/dimens.dart';
 import 'package:hk/values/styles.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../requests/request.dart';
 import '../values/colors.dart';
 import 'aboutus.dart';
 
@@ -165,6 +166,7 @@ Widget drawerLayout({scaffoldState, setState, ctx, userExits}) {
                   child: InkWell(
                     onTap: () {
                       if (userExits != null) {
+                        STM().redirect2page(ctx, const requestPage());
                       } else {
                         STM().redirect2page(ctx, const loginPage());
                       }

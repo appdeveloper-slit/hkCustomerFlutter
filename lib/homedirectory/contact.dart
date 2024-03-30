@@ -30,7 +30,7 @@ class _contactUsPageState extends State<contactUsPage> {
           },
           child: Icon(
             Icons.arrow_back,
-            color: Theme.of(ctx).colorScheme.primary == Clr().white
+            color: Theme.of(ctx).colorScheme.primary == Clr().black
                 ? Clr().primaryColor
                 : Theme.of(ctx).colorScheme.primary,
           ),
@@ -39,7 +39,7 @@ class _contactUsPageState extends State<contactUsPage> {
         title: Text(
           'Contact Us',
           style: nunitaSty().smalltext.copyWith(
-                color: Theme.of(ctx).colorScheme.primary == Clr().white
+                color: Theme.of(ctx).colorScheme.primary == Clr().black
                     ? Clr().primaryColor
                     : Theme.of(ctx).colorScheme.primary,
                 fontWeight: FontWeight.w400,

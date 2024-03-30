@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:hk/auth/login.dart';
 import 'package:hk/homedirectory/home.dart';
 import 'package:hk/theme/theme.dart';
+import 'package:hk/values/colors.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'firstSliderPages/sliders.dart';

@@ -16,6 +16,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'healthtips.dart';
 import 'notificationpage.dart';
+import 'servicesdetail.dart';
 import 'sidedrawer.dart';
 
 List indexList = [];
@@ -178,9 +179,18 @@ class _HomeState extends State<Home> {
                   mainAxisSpacing: 12.0,
                 ),
                 itemBuilder: (BuildContext context, int index) {
-                  return GridItem(
-                    name: serviceArryList[index]['name'],
-                    image: serviceArryList[index]['image_path'],
+                  return InkWell(
+                    onTap: () {
+                      STM().redirect2page(
+                          ctx,
+                          servicesDetailsPage(
+                            data: serviceArryList[index],
+                          ));
+                    },
+                    child: GridItem(
+                      name: serviceArryList[index]['name'],
+                      image: serviceArryList[index]['image_path'],
+                    ),
                   );
                 },
               ),

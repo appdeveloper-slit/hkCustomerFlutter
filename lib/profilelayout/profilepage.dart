@@ -36,14 +36,16 @@ class _profileLayPageState extends State<profileLayPage> {
       Duration.zero,
       () {
         profileApi().getProfile(ctx, setState);
-        nameCtrl = TextEditingController(text: profileData['full_name']);
-        mobileCtrl = TextEditingController(text: profileData['mobile_no']);
-        emailCtrl = TextEditingController(text: profileData['email']);
-        dobCtrl = TextEditingController(text: profileData['dob']);
-        resdCtrl = TextEditingController(text: profileData['address']);
-        gender = profileData['gender'];
-        mapLoc = profileData['location'];
-        getSession(mapLoc);
+        Future.delayed(Duration(seconds: 1), () {
+          nameCtrl = TextEditingController(text: profileData['full_name']);
+          mobileCtrl = TextEditingController(text: profileData['mobile_no']);
+          emailCtrl = TextEditingController(text: profileData['email']);
+          dobCtrl = TextEditingController(text: profileData['dob']);
+          resdCtrl = TextEditingController(text: profileData['address']);
+          gender = profileData['gender'];
+          mapLoc = profileData['location'];
+          getSession(mapLoc);
+        });
       },
     );
     super.initState();
@@ -77,7 +79,7 @@ class _profileLayPageState extends State<profileLayPage> {
             },
             child: Icon(
               Icons.arrow_back,
-              color: Theme.of(ctx).colorScheme.primary == Clr().white
+              color: Theme.of(ctx).colorScheme.primary == Clr().black
                   ? Clr().primaryColor
                   : Theme.of(ctx).colorScheme.primary,
             ),
@@ -86,7 +88,7 @@ class _profileLayPageState extends State<profileLayPage> {
           title: Text(
             'My Profile',
             style: nunitaSty().smalltext.copyWith(
-                  color: Theme.of(ctx).colorScheme.primary == Clr().white
+                  color: Theme.of(ctx).colorScheme.primary == Clr().black
                       ? Clr().primaryColor
                       : Theme.of(ctx).colorScheme.primary,
                   fontWeight: FontWeight.w400,
@@ -177,6 +179,7 @@ class _profileLayPageState extends State<profileLayPage> {
                       ),
                       TextFormField(
                         controller: mobileCtrl,
+                        readOnly: true,
                         keyboardType: TextInputType.number,
                         textInputAction: TextInputAction.done,
                         style: nunitaSty().smalltext.copyWith(
@@ -194,14 +197,19 @@ class _profileLayPageState extends State<profileLayPage> {
                                 size: Dim().d20,
                                 weight: 12.0,
                               ),
-                              suffixIcon: Icon(
-                                Icons.edit_sharp,
-                                color: Theme.of(ctx).colorScheme.primary ==
-                                        Clr().black
-                                    ? Colors.black54
-                                    : Theme.of(ctx).colorScheme.primary,
-                                size: Dim().d20,
-                                weight: 12.0,
+                              suffixIcon: InkWell(
+                                onTap: () {
+                                  mobileUpdate(ctx, setState);
+                                },
+                                child: Icon(
+                                  Icons.edit_sharp,
+                                  color: Theme.of(ctx).colorScheme.primary ==
+                                          Clr().black
+                                      ? Colors.black54
+                                      : Theme.of(ctx).colorScheme.primary,
+                                  size: Dim().d20,
+                                  weight: 12.0,
+                                ),
                               ),
                               filled: true,
                               fillColor: Theme.of(ctx).colorScheme.background ==
@@ -541,6 +549,294 @@ class _profileLayPageState extends State<profileLayPage> {
         ),
       ),
     );
+  }
+
+  /// update mobile
+  Future mobileUpdate(ctx, setState) async {
+    SharedPreferences sp = await SharedPreferences.getInstance();
+    TextEditingController mobCtrl = TextEditingController();
+    TextEditingController otpctrl = TextEditingController();
+    bool loading = false;
+    final _formKey = GlobalKey<FormState>();
+    bool? checkStatus;
+    bool? checkStatus1;
+    return AwesomeDialog(
+        dismissOnBackKeyPress: false,
+        dismissOnTouchOutside: false,
+        dialogType: DialogType.noHeader,
+        width: 600.0,
+        isDense: true,
+        context: ctx,
+        body: StatefulBuilder(builder: (ctx, setState) {
+          return Padding(
+            padding: const EdgeInsets.all(20.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                loading == false
+                    ? Form(
+                        key: _formKey,
+                        child: Column(
+                          children: [
+                            Text('Enter Mobile Number',
+                                style: nunitaSty()
+                                    .mediumText
+                                    .copyWith(fontWeight: FontWeight.w600)),
+                            SizedBox(height: Dim().d20),
+                            TextFormField(
+                              controller: mobCtrl,
+                              maxLength: 10,
+                              keyboardType: TextInputType.number,
+                              textInputAction: TextInputAction.done,
+                              validator: (v) {
+                                if (v!.isEmpty) {
+                                  return 'Mobile number is required';
+                                }
+                                if (v.length != 10) {
+                                  return 'Mobile number digits must be 10';
+                                }
+                                return null;
+                              },
+                              decoration: nunitaSty()
+                                  .TextFormFieldOutlineDarkStyle
+                                  .copyWith(
+                                      hintText: 'Enter Mobile Number',
+                                      counterText: "",
+                                      hintStyle: nunitaSty()
+                                          .mediumText
+                                          .copyWith(color: Clr().hintColor)),
+                            ),
+                            SizedBox(height: Dim().d20),
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: ElevatedButton(
+                                      style: ElevatedButton.styleFrom(
+                                          backgroundColor: Clr().primaryColor),
+                                      onPressed: () {
+                                        STM().back2Previous(ctx);
+                                      },
+                                      child: Center(
+                                        child: Text('Cancel',
+                                            style: nunitaSty()
+                                                .mediumText
+                                                .copyWith(color: Clr().white)),
+                                      )),
+                                ),
+                                SizedBox(width: Dim().d8),
+                                checkStatus == true
+                                    ? CircularProgressIndicator(
+                                        color: Clr().primaryColor)
+                                    : Expanded(
+                                        child: ElevatedButton(
+                                            style: ElevatedButton.styleFrom(
+                                                backgroundColor:
+                                                    Clr().primaryColor),
+                                            onPressed: () async {
+                                              if (_formKey.currentState!
+                                                  .validate()) {
+                                                setState(() {
+                                                  checkStatus = true;
+                                                });
+                                                var result = await STM().allApi(
+                                                    type: 'post',
+                                                    ctx: ctx,
+                                                    load: true,
+                                                    loadtitle: 'Sending OTP',
+                                                    body: {
+                                                      'mobile': mobCtrl.text,
+                                                      'page_type': 'register',
+                                                    },
+                                                    apiname: 'sendOTP');
+                                                if (result['error'] != true) {
+                                                  setState(() {
+                                                    loading = true;
+                                                    checkStatus = false;
+                                                  });
+                                                } else {
+                                                  setState(() {
+                                                    checkStatus = false;
+                                                    loading = false;
+                                                    mobCtrl.clear();
+                                                    AwesomeDialog(
+                                                            context: ctx,
+                                                            dismissOnBackKeyPress:
+                                                                false,
+                                                            dismissOnTouchOutside:
+                                                                false,
+                                                            dialogType:
+                                                                DialogType
+                                                                    .error,
+                                                            animType:
+                                                                AnimType.scale,
+                                                            headerAnimationLoop:
+                                                                true,
+                                                            title: 'Note',
+                                                            desc: result[
+                                                                'message'],
+                                                            btnOkText: "OK",
+                                                            btnOkOnPress: () {
+                                                              Navigator.pop(
+                                                                  ctx);
+                                                            },
+                                                            btnOkColor:
+                                                                Clr().errorRed)
+                                                        .show();
+                                                  });
+                                                }
+                                              }
+                                            },
+                                            child: Center(
+                                              child: Text('Send OTP',
+                                                  style: nunitaSty()
+                                                      .mediumText
+                                                      .copyWith(
+                                                          color: Clr().white)),
+                                            )),
+                                      )
+                              ],
+                            ),
+                          ],
+                        ),
+                      )
+                    : Column(
+                        children: [
+                          Text('Enter OTP',
+                              style: nunitaSty()
+                                  .mediumText
+                                  .copyWith(fontWeight: FontWeight.w600)),
+                          SizedBox(height: Dim().d20),
+                          TextFormField(
+                            controller: otpctrl,
+                            maxLength: 4,
+                            keyboardType: TextInputType.number,
+                            textInputAction: TextInputAction.done,
+                            decoration: nunitaSty()
+                                .TextFormFieldOutlineDarkStyle
+                                .copyWith(
+                                    hintText: 'Enter OTP',
+                                    counterText: '',
+                                    hintStyle: nunitaSty()
+                                        .mediumText
+                                        .copyWith(color: Clr().hintColor)),
+                          ),
+                          SizedBox(height: Dim().d20),
+                          Row(
+                            children: [
+                              Expanded(
+                                child: ElevatedButton(
+                                    style: ElevatedButton.styleFrom(
+                                        backgroundColor: Clr().primaryColor),
+                                    onPressed: () {
+                                      setState(() {
+                                        loading = false;
+                                        otpctrl.clear();
+                                        mobCtrl.clear();
+                                      });
+                                    },
+                                    child: Center(
+                                      child: Text('Back',
+                                          style: nunitaSty()
+                                              .mediumText
+                                              .copyWith(color: Clr().white)),
+                                    )),
+                              ),
+                              SizedBox(width: Dim().d12),
+                              checkStatus1 == true
+                                  ? CircularProgressIndicator(
+                                      color: Clr().primaryColor)
+                                  : Expanded(
+                                      child: ElevatedButton(
+                                          style: ElevatedButton.styleFrom(
+                                              backgroundColor:
+                                                  Clr().primaryColor),
+                                          onPressed: () async {
+                                            setState(() {
+                                              checkStatus1 = true;
+                                            });
+                                            // FormData body = FormData.fromMap({
+                                            //   'phone': mobilectrl.text,
+                                            //   'otp': otpctrl.text,
+                                            // });
+                                            // var result = await STM().allApi(
+                                            //   apiname: 'profile/update/phone',
+                                            //   token: sp.getString('token'),
+                                            //   body: {
+                                            //     'phone': mobilectrl.text,
+                                            //     'otp': otpctrl.text,
+                                            //   },
+                                            //   loadtitle: 'OTP Verifying...',
+                                            //   load: true,
+                                            //   ctx: ctx,
+                                            //   type: 'post',
+                                            // );
+                                            // if (result['success']) {
+                                            //   setState(() {
+                                            //     checkStatus1 = false;
+                                            //     otpctrl.clear();
+                                            //     mobilectrl.clear();
+                                            //   });
+                                            //   STM().successsDialogWithAffinity(
+                                            //       ctx,
+                                            //       result['message'],
+                                            //       Home());
+                                            // } else {
+                                            //   setState(() {
+                                            //     checkStatus1 = false;
+                                            //     otpctrl.clear();
+                                            //   });
+                                            // STM().errorDialog(
+                                            //     ctx, result['message']);
+                                            // }
+                                            var result = await STM().allApi(
+                                                type: 'post',
+                                                ctx: ctx,
+                                                load: true,
+                                                loadtitle: 'Processing...',
+                                                body: {
+                                                  'mobile': mobCtrl.text,
+                                                  'user_id':
+                                                      sp.getString('userid'),
+                                                  'otp': otpctrl.text,
+                                                },
+                                                apiname: 'change_mobile');
+                                            if (result['error'] != true) {
+                                              setState(() {
+                                                checkStatus1 = false;
+                                                otpctrl.clear();
+                                                mobileCtrl =
+                                                    TextEditingController(
+                                                  text: mobCtrl.text,
+                                                );
+                                                mobCtrl.clear();
+                                                STM().back2Previous(ctx);
+                                              });
+                                            } else {
+                                              setState(() {
+                                                checkStatus1 = false;
+                                                loading = false;
+                                                otpctrl.clear();
+                                                STM().errorDialog(
+                                                    ctx, result['message']);
+                                              });
+                                            }
+                                          },
+                                          child: Center(
+                                            child: Text('Submit',
+                                                style: nunitaSty()
+                                                    .mediumText
+                                                    .copyWith(
+                                                        color: Clr().white)),
+                                          )),
+                                    )
+                            ],
+                          ),
+                        ],
+                      ),
+              ],
+            ),
+          );
+        })).show();
   }
 }
 
