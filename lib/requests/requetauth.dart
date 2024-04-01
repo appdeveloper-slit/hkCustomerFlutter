@@ -1,3 +1,4 @@
+import 'package:hk/homedirectory/home.dart';
 import 'package:hk/manage/static_method.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -51,6 +52,27 @@ class requestAuthApi {
           statusList.add(result['track_array'][a]['status']);
         });
       }
+    }
+  }
+
+  void cancelBooking(ctx, setState, id, reason) async {
+    SharedPreferences sp = await SharedPreferences.getInstance();
+    var body = {
+      'id': id,
+      'reason': reason,
+    };
+    var result = await STM().allApi(
+      apiname: 'cancel_booking',
+      body: body,
+      ctx: ctx,
+      load: true,
+      loadtitle: 'Cancelling',
+      type: 'post',
+    );
+    if (result['error'] == false) {
+      STM().successsDialogWithAffinity(ctx, result['message'], const Home());
+    } else {
+      STM().errorDialog(ctx, result['message']);
     }
   }
 }

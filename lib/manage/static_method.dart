@@ -126,6 +126,7 @@ class STM {
             headerAnimationLoop: true,
             title: 'successs',
             desc: message,
+            descTextStyle: nunitaSty().smalltext,
             btnOkText: "OK",
             btnOkOnPress: () {
               Navigator.pushAndRemoveUntil(
@@ -802,7 +803,7 @@ class STM {
               width: 80.0,
               height: 80.0,
               decoration: BoxDecoration(
-                shape: BoxShape.rectangle,
+                shape: BoxShape.circle,
                 // borderRadius: BorderRadius.all(Radius.circular(10)),
                 image: DecorationImage(image: imageProvider, fit: BoxFit.cover),
               ),

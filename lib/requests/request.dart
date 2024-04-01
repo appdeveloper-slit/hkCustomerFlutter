@@ -55,7 +55,7 @@ class _requestPageState extends State<requestPage> {
         centerTitle: true,
         title: Text(
           'My Request',
-          style: nunitaSty().smalltext.copyWith(
+          style: nunitaSty().extraLargeText.copyWith(
                 color: Theme.of(ctx).colorScheme.primary == Clr().black
                     ? Clr().primaryColor
                     : Theme.of(ctx).colorScheme.primary,
@@ -80,11 +80,25 @@ class _requestPageState extends State<requestPage> {
                     padding: EdgeInsets.only(bottom: Dim().d16),
                     child: InkWell(
                       onTap: () {
-                        STM().redirect2page(ctx, requestdetailPage(data: requestArrayList[index],));
+                        STM().redirect2page(
+                            ctx,
+                            requestdetailPage(
+                              data: requestArrayList[index],
+                            ));
                       },
-                      child: Card(
-                        color: Theme.of(ctx).colorScheme.background,
-                        elevation: 3,
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: Theme.of(ctx).colorScheme.background,
+                          borderRadius:
+                              BorderRadius.all(Radius.circular(Dim().d12)),
+                          boxShadow: [
+                            BoxShadow(
+                              blurRadius: 5,
+                              spreadRadius: Dim().d2,
+                              color: Colors.black12,
+                            )
+                          ],
+                        ),
                         child: Padding(
                           padding: EdgeInsets.symmetric(
                               vertical: Dim().d14, horizontal: Dim().d32),
@@ -116,19 +130,25 @@ class _requestPageState extends State<requestPage> {
                                     height: Dim().d4,
                                   ),
                                   Text(
-                                    '${requestArrayList[index]['booking_status']}',
+                                    requestArrayList[index]['is_cancel'] == true
+                                        ? "Cancelled"
+                                        : '${requestArrayList[index]['booking_status']}',
                                     style: nunitaSty().smalltext.copyWith(
                                           color: requestArrayList[index]
-                                                      ['booking_status'] ==
-                                                  'Pending'
-                                              ? Clr().yellow
+                                                      ['is_cancel'] ==
+                                                  true
+                                              ? Clr().errorRed
                                               : requestArrayList[index]
                                                           ['booking_status'] ==
-                                                      'Completed'
-                                                  ? Clr().successGreen
-                                                  : Theme.of(ctx)
-                                                      .colorScheme
-                                                      .primary,
+                                                      'Pending'
+                                                  ? Clr().yellow
+                                                  : requestArrayList[index][
+                                                              'booking_status'] ==
+                                                          'Completed'
+                                                      ? Clr().successGreen
+                                                      : Theme.of(ctx)
+                                                          .colorScheme
+                                                          .primary,
                                           fontWeight: FontWeight.w400,
                                         ),
                                   ),

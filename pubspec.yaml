@@ -51,6 +51,8 @@ dependencies:
   share_plus:
   maps_launcher:
   youtube_player_flutter:
+  timelines: 
+  easy_stepper:
 
 dev_dependencies:
   flutter_test:
