@@ -9,6 +9,8 @@ List faqList = [];
 List tipsList = [];
 List notiList = [];
 var checkUserStaus, checkUpdate;
+var balance;
+List walletHList = [];
 
 class homeApiAuth {
   void homeApi(ctx, setState, list) async {
@@ -53,7 +55,7 @@ class homeApiAuth {
       loadtitle: 'Loading',
       type: 'post',
     );
-    if (result['error'] == false) {
+    if (result['error'] == true) {
       setState(() {
         notiList = result['result_array'];
       });
@@ -78,6 +80,29 @@ class homeApiAuth {
     );
     if (result['error'] == false) {
       STM().successsDialogWithAffinity(ctx, result['message'], const Home());
+    } else {
+      STM().errorDialog(ctx, result['message']);
+    }
+  }
+
+  void walletHistryApi(ctx, setState) async {
+    SharedPreferences sp = await SharedPreferences.getInstance();
+    var body = {
+      "user_id": sp.getString('userid'),
+    };
+    var result = await STM().allApi(
+      apiname: 'wallet_history',
+      body: body,
+      ctx: ctx,
+      load: true,
+      loadtitle: 'Loading',
+      type: 'post',
+    );
+    if (result['error'] == false) {
+      setState(() {
+        walletHList = result['result_array'];
+        balance = result['balance'];
+      });
     } else {
       STM().errorDialog(ctx, result['message']);
     }

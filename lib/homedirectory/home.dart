@@ -18,6 +18,7 @@ import 'healthtips.dart';
 import 'notificationpage.dart';
 import 'servicesdetail.dart';
 import 'sidedrawer.dart';
+import 'wallet.dart';
 
 List indexList = [];
 
@@ -97,14 +98,19 @@ class _HomeState extends State<Home> {
           ),
           centerTitle: true,
           actions: [
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: Dim().d16),
-              child: SvgPicture.asset(
-                'assets/Group.svg',
-                fit: BoxFit.fitWidth,
-                color: Theme.of(ctx).colorScheme.primary == Clr().white
-                    ? Clr().white
-                    : Clr().primaryColor,
+            InkWell(
+              onTap: () {
+                STM().redirect2page(ctx, const walletPage());
+              },
+              child: Padding(
+                padding: EdgeInsets.symmetric(horizontal: Dim().d16),
+                child: SvgPicture.asset(
+                  'assets/Group.svg',
+                  fit: BoxFit.fitWidth,
+                  color: Theme.of(ctx).colorScheme.primary == Clr().white
+                      ? Clr().white
+                      : Clr().primaryColor,
+                ),
               ),
             ),
             InkWell(

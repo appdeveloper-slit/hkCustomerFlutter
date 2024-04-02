@@ -32,7 +32,6 @@ class _notificationPageState extends State<notificationPage> {
 
   @override
   Widget build(BuildContext context) {
-    
     ctx = context;
     return Scaffold(
       backgroundColor: Theme.of(ctx).colorScheme.background,
@@ -45,18 +44,14 @@ class _notificationPageState extends State<notificationPage> {
           },
           child: Icon(
             Icons.arrow_back,
-            color: Theme.of(ctx).colorScheme.primary == Clr().white
-                ? Clr().primaryColor
-                : Theme.of(ctx).colorScheme.primary,
+            color: Theme.of(ctx).colorScheme.primary,
           ),
         ),
         centerTitle: true,
         title: Text(
           'Notifications',
-          style: nunitaSty().smalltext.copyWith(
-                color: Theme.of(ctx).colorScheme.primary == Clr().white
-                    ? Clr().primaryColor
-                    : Theme.of(ctx).colorScheme.primary,
+          style: nunitaSty().extraLargeText.copyWith(
+                color: Theme.of(ctx).colorScheme.primary,
                 fontWeight: FontWeight.w400,
               ),
         ),
@@ -65,61 +60,67 @@ class _notificationPageState extends State<notificationPage> {
           padding: EdgeInsets.symmetric(horizontal: Dim().d16),
           child: Column(
             children: [
+              SizedBox(
+                height: Dim().d20,
+              ),
               ListView.builder(
                 shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),
                 itemCount: notiList.length,
                 itemBuilder: (context, index) {
-                  return Container(
-                    padding: EdgeInsets.all(Dim().d12),
-                    decoration: BoxDecoration(
-                        color: Theme.of(ctx).colorScheme.background,
-                        border: Border.all(
-                          color: Colors.black26,
-                          width: 0.3,
-                        ),
-                        boxShadow: const [
-                          BoxShadow(
-                            blurRadius: 1,
-                            spreadRadius: 1,
-                            offset: Offset(0, 1),
+                  return Padding(
+                    padding: EdgeInsets.only(bottom: Dim().d20),
+                    child: Container(
+                      padding: EdgeInsets.all(Dim().d12),
+                      decoration: BoxDecoration(
+                          color: Theme.of(ctx).colorScheme.background,
+                          border: Border.all(
                             color: Colors.black26,
+                            width: 0.3,
                           ),
-                        ]),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          '${notiList[index]['title']}',
-                          style: nunitaSty().mediumText.copyWith(
-                                fontWeight: FontWeight.w900,
-                                color: Theme.of(ctx).colorScheme.primary,
-                              ),
-                        ),
-                        SizedBox(
-                          height: Dim().d16,
-                        ),
-                        Text(
-                          '${notiList[index]['message']}',
-                          style: nunitaSty().smalltext.copyWith(
-                                fontWeight: FontWeight.w400,
-                                color: Theme.of(ctx).colorScheme.primary,
-                              ),
-                        ),
-                        SizedBox(
-                          height: Dim().d12,
-                        ),
-                        Align(
-                          alignment: Alignment.centerRight,
-                          child: Text(
-                            '${notiList[index]['date_time']}',
-                            style: nunitaSty().microText.copyWith(
-                                  fontWeight: FontWeight.w200,
-                                  color: Clr().black.withOpacity(0.5),
+                          boxShadow: const [
+                            BoxShadow(
+                              blurRadius: 1,
+                              spreadRadius: 1,
+                              offset: Offset(0, 1),
+                              color: Colors.black26,
+                            ),
+                          ]),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            '${notiList[index]['title']}',
+                            style: nunitaSty().mediumText.copyWith(
+                                  fontWeight: FontWeight.bold,
+                                  color: Theme.of(ctx).colorScheme.primary,
                                 ),
                           ),
-                        ),
-                      ],
+                          SizedBox(
+                            height: Dim().d16,
+                          ),
+                          Text(
+                            '${notiList[index]['message']}',
+                            style: nunitaSty().smalltext.copyWith(
+                                  fontWeight: FontWeight.w400,
+                                  color: Theme.of(ctx).colorScheme.primary,
+                                ),
+                          ),
+                          SizedBox(
+                            height: Dim().d12,
+                          ),
+                          Align(
+                            alignment: Alignment.centerRight,
+                            child: Text(
+                              '${notiList[index]['date_time']}',
+                              style: nunitaSty().microText.copyWith(
+                                    fontWeight: FontWeight.w200,
+                                    color: Theme.of(ctx).colorScheme.primary,
+                                  ),
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   );
                 },

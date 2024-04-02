@@ -35,7 +35,7 @@ class _AboutUsPageState extends State<AboutUsPage> {
         centerTitle: true,
         title: Text(
           'About Us',
-          style: nunitaSty().smalltext.copyWith(
+          style: nunitaSty().extraLargeText.copyWith(
                 color: Theme.of(ctx).colorScheme.primary == Clr().black
                     ? Clr().primaryColor
                     : Theme.of(ctx).colorScheme.primary,

@@ -3,6 +3,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:hk/auth/login.dart';
 import 'package:hk/homedirectory/contact.dart';
 import 'package:hk/homedirectory/home.dart';
+import 'package:hk/homedirectory/wallet.dart';
 import 'package:hk/manage/static_method.dart';
 import 'package:hk/profilelayout/profilepage.dart';
 import 'package:hk/values/dimens.dart';
@@ -131,6 +132,7 @@ Widget drawerLayout({scaffoldState, setState, ctx, userExits}) {
                   child: InkWell(
                     onTap: () {
                       if (userExits != null) {
+                        STM().redirect2page(ctx, const walletPage());
                       } else {
                         STM().redirect2page(ctx, const loginPage());
                       }

@@ -38,7 +38,7 @@ class _contactUsPageState extends State<contactUsPage> {
         centerTitle: true,
         title: Text(
           'Contact Us',
-          style: nunitaSty().smalltext.copyWith(
+          style: nunitaSty().extraLargeText.copyWith(
                 color: Theme.of(ctx).colorScheme.primary == Clr().black
                     ? Clr().primaryColor
                     : Theme.of(ctx).colorScheme.primary,

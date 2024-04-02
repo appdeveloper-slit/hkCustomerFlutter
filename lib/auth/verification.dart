@@ -73,7 +73,9 @@ class _verificationPageState extends State<verificationPage> {
                   // errorAnimationController: errorController,
                   appContext: context,
                   enableActiveFill: true,
-                  textStyle: nunitaSty().largeText,
+                  textStyle: nunitaSty().largeText.copyWith(
+                        color: Theme.of(ctx).colorScheme.primary,
+                      ),
                   length: 4,
                   obscureText: false,
                   keyboardType: TextInputType.number,
