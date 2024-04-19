@@ -348,6 +348,25 @@ class STM {
     return STM().dateFormat('yyyy-MM-dd', picked);
   }
 
+  /// Date Picker
+  Future<String> pathodatePicker(ctx) async {
+    DateTime? picked = await showDatePicker(
+      context: ctx,
+      builder: (context, child) {
+        return Theme(
+          data: ThemeData(
+            colorScheme: ColorScheme.light(primary: Clr().primaryColor),
+          ),
+          child: child!,
+        );
+      },
+      initialDate: DateTime.now(),
+      firstDate: DateTime.now(),
+      lastDate: DateTime(2100),
+    );
+    return STM().dateFormat('yyyy-MM-dd', picked);
+  }
+
   Widget sb({
     double? h,
     double? w,
@@ -753,12 +772,125 @@ class STM {
     return result;
   }
 
+  Future<dynamic> pathologyApi({
+    ctx,
+    Map<String, dynamic>? body,
+    apiname,
+    type,
+    bool? load,
+    loadtitle,
+    token,
+  }) async {
+    SharedPreferences sp = await SharedPreferences.getInstance();
+    AwesomeDialog dialog = STM().loadingDialog(ctx, loadtitle);
+    load == true ? dialog.show() : null;
+    String url = 'https://t25crm.healthians.co.in/api/labhendra/$apiname';
+    var headers = {
+      "Content-Type": "application/json",
+      "responseType": "ResponseType.plain",
+      "Authorization": "Bearer $token"
+    };
+    if (type == 'get') {
+      String username =
+          "tKal2af1Cobr9NfaTkB5l3jAZwynsFektEC9R2GwElwU22sIqpYbxOZItAIKURj2";
+      String password = "24REzu4d927v8ibFt5otVjs4E5bA7iMp";
+      // Encode your credentials
+      String basicAuth =
+          'Basic ${base64Encode(utf8.encode('$username:$password'))}';
+      // Add Authorization header
+      headers['Authorization'] = basicAuth;
+    }
+
+    dynamic result;
+    try {
+      final response = type == 'post'
+          ? await http.post(
+              Uri.parse(url),
+              body: json.encode(body),
+              headers: headers,
+            )
+          : await http.get(
+              Uri.parse(url),
+              headers: headers,
+            );
+      if (response.statusCode == 200) {
+        print(response.body);
+        try {
+          load == true ? dialog.dismiss() : null;
+          result = json.decode(response.body.toString());
+        } catch (_) {
+          load == true ? dialog.dismiss() : null;
+          result = response.body;
+        }
+      } else {
+        try {
+          load == true ? dialog.dismiss() : null;
+          result = json.decode(response.body.toString());
+        } catch (_) {
+          load == true ? dialog.dismiss() : null;
+          result = response.body;
+        }
+        load == true ? dialog.dismiss() : null;
+        // STM().errorDialog(ctx,'Something went wrong on the server side. Please try again later ${response.statusCode} Occurred  in $apiname');
+      }
+    } catch (e) {
+      load == true ? dialog.dismiss() : null;
+      if (e is TimeoutException) {
+        showToast('TimeOut!!!,Please try again');
+      } else if (e is CertificateException) {
+        showToast(
+            'CertificateException!!! SSL not verified while fetching data from $apiname');
+      } else if (e is HandshakeException) {
+        showToast(
+            'HandshakeException!!! Connection not secure while fetching data from $apiname');
+      } else if (e is FormatException) {
+        showToast(
+            'FormatException!!! Data cannot parse and unexpected format while fetching data from $apiname');
+      } else {
+        showToast('Something went wrong in $apiname');
+      }
+    }
+    return result;
+  }
+
   Widget loadingPlaceHolder() {
     return Center(
       child: CircularProgressIndicator(
         strokeWidth: 0.6,
         color: Clr().primaryColor,
       ),
+    );
+  }
+
+  getCharString(text) {
+    List<String> nameList = text.toString().split(" ");
+    var charName;
+    if (nameList.length < 2) {
+      charName = nameList[0][0];
+    } else if (nameList.length < 3) {
+      charName = nameList[0][0] + nameList[1][0];
+    } else {
+      charName = nameList[0][0] + nameList[nameList.length - 1][0];
+    }
+
+    return charName.toString().toUpperCase();
+  }
+
+  getdate(sdate, edate, date) {
+    return '${DateFormat('hh:mm a').format(
+      DateTime.parse(
+        '${date} ${sdate}',
+      ),
+    )} to ${DateFormat('hh:mm a').format(
+      DateTime.parse(
+        '${date} ${edate}',
+      ),
+    )}';
+  }
+
+  getDay(date, time) {
+    return DateFormat('EEEE').format(
+      DateTime.parse('$date $time'),
     );
   }
 

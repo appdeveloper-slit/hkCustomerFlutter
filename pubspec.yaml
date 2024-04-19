@@ -55,6 +55,7 @@ dependencies:
   easy_stepper:
   pull_to_refresh:
   razorpay_flutter:
+  uuid:
 
 dev_dependencies:
   flutter_test:

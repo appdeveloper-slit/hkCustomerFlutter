@@ -322,10 +322,13 @@ class _requestdetailPageState extends State<requestdetailPage> {
                               width: double.infinity,
                               child: ElevatedButton(
                                   style: ElevatedButton.styleFrom(
-                                      backgroundColor: Clr().primaryColor,
-                                      shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.all(
-                                              Radius.circular(Dim().d2)))),
+                                    backgroundColor: Clr().primaryColor,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.all(
+                                        Radius.circular(Dim().d2),
+                                      ),
+                                    ),
+                                  ),
                                   onPressed: () {
                                     showDialog(
                                       context: context,

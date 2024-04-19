@@ -14,6 +14,7 @@ import 'package:intl/intl.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../pathology/selectLocationPage.dart';
 import 'healthtips.dart';
 import 'notificationpage.dart';
 import 'servicesdetail.dart';
@@ -187,11 +188,14 @@ class _HomeState extends State<Home> {
                 itemBuilder: (BuildContext context, int index) {
                   return InkWell(
                     onTap: () {
-                      STM().redirect2page(
-                          ctx,
-                          servicesDetailsPage(
-                            data: serviceArryList[index],
-                          ));
+                      serviceArryList[index]['name'] == 'Pathology'
+                          ? STM().redirect2page(ctx, const locationPage())
+                          : STM().redirect2page(
+                              ctx,
+                              servicesDetailsPage(
+                                data: serviceArryList[index],
+                              ),
+                            );
                     },
                     child: GridItem(
                       name: serviceArryList[index]['name'],
