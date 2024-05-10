@@ -56,6 +56,7 @@ dependencies:
   pull_to_refresh:
   razorpay_flutter:
   uuid:
+  crypto:
 
 dev_dependencies:
   flutter_test:

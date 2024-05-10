@@ -1,9 +1,15 @@
+import 'dart:convert';
+
+import 'package:crypto/crypto.dart';
 import 'package:flutter/material.dart';
+import 'package:hk/homedirectory/home.dart';
 import 'package:hk/pathology/addpatient.dart';
 import 'package:hk/pathology/slotsSelectionPage.dart';
 import 'package:hk/values/dimens.dart';
 import 'package:intl/intl.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../manage/static_method.dart';
+import '../profilelayout/profileapiauth.dart';
 import '../values/colors.dart';
 import '../values/styles.dart';
 import 'selectLocationPage.dart';
@@ -18,6 +24,14 @@ class summaryPage extends StatefulWidget {
 class _summaryPageState extends State<summaryPage> {
   late BuildContext ctx;
   TextEditingController addCtrl = TextEditingController();
+
+  @override
+  void initState() {
+    Future.delayed(Duration.zero, () {
+      profileApi().getProfile(ctx, setState);
+    });
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -92,43 +106,47 @@ class _summaryPageState extends State<summaryPage> {
                         SizedBox(
                           width: Dim().d12,
                         ),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              patientdata['customer_name'],
-                              style: nunitaSty().largeText.copyWith(
-                                    color: Clr().black,
-                                    fontWeight: FontWeight.w500,
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                patientdata['customer_name'],
+                                style: nunitaSty().largeText.copyWith(
+                                      color: Clr().black,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                              ),
+                              SizedBox(
+                                height: Dim().d8,
+                              ),
+                              Wrap(
+                                crossAxisAlignment: WrapCrossAlignment.center,
+                                children: [
+                                  Text(
+                                    patientdata['gender']
+                                            .toString()
+                                            .contains('M')
+                                        ? 'Male'
+                                        : 'Female',
+                                    style: nunitaSty()
+                                        .mediumText
+                                        .copyWith(color: Clr().hintColor),
                                   ),
-                            ),
-                            SizedBox(
-                              height: Dim().d8,
-                            ),
-                            Wrap(
-                              crossAxisAlignment: WrapCrossAlignment.center,
-                              children: [
-                                Text(
-                                  patientdata['gender'].toString().contains('M')
-                                      ? 'Male'
-                                      : 'Female',
-                                  style: nunitaSty()
-                                      .mediumText
-                                      .copyWith(color: Clr().hintColor),
-                                ),
-                                SizedBox(
-                                  width: Dim().d12,
-                                ),
-                                Text(
-                                  '${patientdata['age']} years',
-                                  style: nunitaSty().mediumText.copyWith(
-                                        color: Clr().hintColor,
-                                      ),
-                                ),
-                              ],
-                            )
-                          ],
+                                  SizedBox(
+                                    width: Dim().d12,
+                                  ),
+                                  Text(
+                                    '${patientdata['age']} years',
+                                    style: nunitaSty().mediumText.copyWith(
+                                          color: Clr().hintColor,
+                                        ),
+                                  ),
+                                ],
+                              )
+                            ],
+                          ),
                         )
                       ],
                     ),
@@ -277,24 +295,34 @@ class _summaryPageState extends State<summaryPage> {
                         ),
                   ),
                   ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                          backgroundColor: Clr().white,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.all(
-                              Radius.circular(Dim().d8),
-                            ),
-                          )),
-                      onPressed: () {
+                    style: ElevatedButton.styleFrom(
+                        backgroundColor: Clr().white,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.all(
+                            Radius.circular(Dim().d8),
+                          ),
+                        )),
+                    onPressed: () {
+                      if (addCtrl.text.isEmpty) {
+                        STM().displayToast('Please enter a full adreess.');
+                      } else {
                         print(addressList);
                         print(slotData);
                         print(patientdata);
-                      },
-                      child: Text(
-                        'Proceed',
-                        style: nunitaSty().mediumText.copyWith(
-                              color: Clr().primaryColor,
-                            ),
-                      ))
+                        print(profileData);
+                        addBookingApi();
+                      }
+                      // print(addressList);
+                      // print(slotData);
+                      // print(patientdata);
+                    },
+                    child: Text(
+                      'Proceed',
+                      style: nunitaSty().mediumText.copyWith(
+                            color: Clr().primaryColor,
+                          ),
+                    ),
+                  )
                 ],
               ),
             ),
@@ -302,5 +330,55 @@ class _summaryPageState extends State<summaryPage> {
         ],
       ),
     );
+  }
+
+  void addBookingApi() async {
+    SharedPreferences sp = await SharedPreferences.getInstance();
+    var body = {
+      "customer": [patientdata],
+      "slot": {
+        "slot_id": slotData['stm_id'],
+      },
+      "package": [
+        {
+          "deal_id": ["package_286"],
+        }
+      ],
+      "customer_calling_number": profileData['mobile_no'],
+      "billing_cust_name": profileData['full_name'],
+      "gender": profileData['gender'].toString()[0].toUpperCase(),
+      "mobile": profileData['mobile_no'],
+      "email": profileData['email'],
+      "latitude": Slat,
+      "longitude": slng,
+      "address": addCtrl.text,
+      "sub_locality": addCtrl.text,
+      "zipcode": addressList[0].postalCode ?? addressList[1].postalCode,
+      "vendor_billing_user_id":
+          "f210f119ff1ac8663ece265b5796e740afe86fdaf60ee9deb05a1d10798b",
+      "payment_option": "cod",
+      "discounted_price": 900,
+    };
+
+    // ignore: use_build_context_synchronously
+    var result = await STM().pathologyApi(
+      ctx: ctx,
+      apiname: 'createBooking_v1',
+      type: 'post',
+      body: body,
+      load: true,
+      loadtitle: 'Processing...',
+      token: sp.getString('pathotoken'),
+    );
+    if (result['status'] == true) {
+      // ignore:  use_build_context_synchronously
+      STM().successsDialogWithAffinity(ctx, result['message'], const Home());
+    } else if (result['error'] != null) {
+      // ignore: use_build_context_synchronously
+      STM().errorDialog(ctx, result['error']);
+    } else {
+      // ignore: use_build_context_synchronously
+      STM().errorDialog(ctx, result['message']);
+    }
   }
 }

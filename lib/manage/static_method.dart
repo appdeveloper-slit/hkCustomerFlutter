@@ -1,9 +1,12 @@
+// ignore_for_file: non_constant_identifier_names
+
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:crypto/crypto.dart';
 import 'package:flutter/widgets.dart';
 import 'package:http/http.dart' as http;
 
@@ -772,6 +775,22 @@ class STM {
     return result;
   }
 
+  String generateHMAC(String data, String key) {
+    List<int> keyBytes = utf8.encode(key);
+    List<int> dataBytes = utf8.encode(data);
+
+    // Create an HMAC instance with SHA256 and the provided key
+    Hmac hmacSha256 = Hmac(sha256, keyBytes);
+
+    // // Generate the HMAC by hashing the data bytes
+    // Digest digest = hmacSha256.convert(dataBytes);
+
+    // // Encode the digest bytes to base64
+    // String hmacBase64 = base64.encode(digest.bytes);
+
+    return hmacSha256.convert(dataBytes).toString();
+  }
+
   Future<dynamic> pathologyApi({
     ctx,
     Map<String, dynamic>? body,
@@ -785,10 +804,16 @@ class STM {
     AwesomeDialog dialog = STM().loadingDialog(ctx, loadtitle);
     load == true ? dialog.show() : null;
     String url = 'https://t25crm.healthians.co.in/api/labhendra/$apiname';
+
+    var bytes = utf8.encode(body.toString());
+    var CheckSum = Hmac(sha256, utf8.encode('wEaELWiyr3suAx3cPZNmyBS7'));
+    print("checksum: ${CheckSum.convert(bytes)}");
+
     var headers = {
       "Content-Type": "application/json",
       "responseType": "ResponseType.plain",
-      "Authorization": "Bearer $token"
+      "Authorization": "Bearer $token",
+      "X-Checksum": CheckSum.toString(),
     };
     if (type == 'get') {
       String username =
@@ -863,13 +888,15 @@ class STM {
   }
 
   getCharString(text) {
-    List<String> nameList = text.toString().split(" ");
+    List<String> nameList = [];
     var charName;
-    if (nameList.length < 2) {
+    nameList.clear();
+    nameList = text.toString().split(" ");
+    print(nameList);
+    if (nameList.length == 1) {
       charName = nameList[0][0];
-    } else if (nameList.length < 3) {
-      charName = nameList[0][0] + nameList[1][0];
     } else {
+      nameList.removeAt(nameList.length - 1);
       charName = nameList[0][0] + nameList[nameList.length - 1][0];
     }
 
