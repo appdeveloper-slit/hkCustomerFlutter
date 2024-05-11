@@ -1,4 +1,4 @@
-// ignore_for_file: non_constant_identifier_names
+// ignore_for_file: non_constant_identifier_names, prefer_const_declarations, unnecessary_brace_in_string_interps
 
 import 'dart:async';
 import 'dart:convert';
@@ -775,20 +775,11 @@ class STM {
     return result;
   }
 
-  String generateHMAC(String data, String key) {
-    List<int> keyBytes = utf8.encode(key);
-    List<int> dataBytes = utf8.encode(data);
-
-    // Create an HMAC instance with SHA256 and the provided key
-    Hmac hmacSha256 = Hmac(sha256, keyBytes);
-
-    // // Generate the HMAC by hashing the data bytes
-    // Digest digest = hmacSha256.convert(dataBytes);
-
-    // // Encode the digest bytes to base64
-    // String hmacBase64 = base64.encode(digest.bytes);
-
-    return hmacSha256.convert(dataBytes).toString();
+  String generateHmac(String data, String key) {
+    final hmacSha256 = Hmac(sha256, utf8.encode(key)); // HMAC-SHA256
+    final bytes = utf8.encode(data);
+    final digest = hmacSha256.convert(bytes);
+    return digest.toString();
   }
 
   Future<dynamic> pathologyApi({
@@ -805,15 +796,20 @@ class STM {
     load == true ? dialog.show() : null;
     String url = 'https://t25crm.healthians.co.in/api/labhendra/$apiname';
 
-    var bytes = utf8.encode(body.toString());
-    var CheckSum = Hmac(sha256, utf8.encode('wEaELWiyr3suAx3cPZNmyBS7'));
-    print("checksum: ${CheckSum.convert(bytes)}");
+    ///checksum process start
+    final dataValue = json.encode(body);
+    print(dataValue);
+    final key = 'wEaELWiyr3suAx3cPZNmyBS7';
+    final digest = generateHmac(dataValue, key);
+    print("checksum: ${digest}");
+
+    /// checksum process end
 
     var headers = {
       "Content-Type": "application/json",
       "responseType": "ResponseType.plain",
       "Authorization": "Bearer $token",
-      "X-Checksum": CheckSum.toString(),
+      "X-Checksum": digest.toString(),
     };
     if (type == 'get') {
       String username =
@@ -831,7 +827,7 @@ class STM {
       final response = type == 'post'
           ? await http.post(
               Uri.parse(url),
-              body: json.encode(body),
+              body: dataValue,
               headers: headers,
             )
           : await http.get(
