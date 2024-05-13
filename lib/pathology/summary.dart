@@ -12,7 +12,9 @@ import '../manage/static_method.dart';
 import '../profilelayout/profileapiauth.dart';
 import '../values/colors.dart';
 import '../values/styles.dart';
+import 'detailspage.dart';
 import 'selectLocationPage.dart';
+import 'selecttest.dart';
 
 class summaryPage extends StatefulWidget {
   const summaryPage({super.key});
@@ -265,7 +267,7 @@ class _summaryPageState extends State<summaryPage> {
                           style: nunitaSty().mediumText,
                         ),
                         Text(
-                          '₹ 1000',
+                          '₹ $price',
                           style: nunitaSty().mediumText,
                         ),
                       ],
@@ -289,7 +291,7 @@ class _summaryPageState extends State<summaryPage> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    '₹ 1000',
+                    '₹ $price',
                     style: nunitaSty().mediumText.copyWith(
                           color: Clr().white,
                         ),
@@ -341,8 +343,10 @@ class _summaryPageState extends State<summaryPage> {
       },
       "package": [
         {
-          "deal_id": ["package_286"],
-        }
+            "deal_id": [
+                "package_$selectedTest"
+            ]
+        },
       ],
       "customer_calling_number": profileData['mobile_no'],
       "billing_cust_name": profileData['full_name'],
@@ -357,9 +361,9 @@ class _summaryPageState extends State<summaryPage> {
       "vendor_billing_user_id":
           "f210f119ff1ac8663ece265b5796e740afe86fdaf60ee9deb05a1d10798b",
       "payment_option": "cod",
-      "discounted_price": 900,
+      "discounted_price": price,
     };
-
+    print(body);
     // ignore: use_build_context_synchronously
     var result = await STM().pathologyApi(
       ctx: ctx,
@@ -372,7 +376,7 @@ class _summaryPageState extends State<summaryPage> {
     );
     if (result['status'] == true) {
       // ignore:  use_build_context_synchronously
-      STM().successsDialogWithAffinity(ctx, result['message'], const Home());
+      STM().successsDialogWithAffinity(ctx, result['message'],  detailspage(data: body,bookingid: result['booking_id'],));
     } else if (result['error'] != null) {
       // ignore: use_build_context_synchronously
       STM().errorDialog(ctx, result['error']);
@@ -381,4 +385,5 @@ class _summaryPageState extends State<summaryPage> {
       STM().errorDialog(ctx, result['message']);
     }
   }
+
 }

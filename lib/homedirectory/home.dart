@@ -189,7 +189,9 @@ class _HomeState extends State<Home> {
                   return InkWell(
                     onTap: () {
                       serviceArryList[index]['name'] == 'Pathology'
-                          ? STM().redirect2page(ctx, const locationPage())
+                          ? userId != null
+                              ? STM().redirect2page(ctx, const locationPage())
+                              : STM().redirect2page(ctx, const loginPage())
                           : STM().redirect2page(
                               ctx,
                               servicesDetailsPage(

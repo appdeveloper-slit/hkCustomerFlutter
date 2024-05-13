@@ -21,6 +21,7 @@ class profileApi {
     );
     setState(() {
       profileData = result;
+      print(profileData);
     });
   }
 

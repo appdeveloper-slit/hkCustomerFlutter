@@ -2,7 +2,9 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:hk/auth/login.dart';
 import 'package:hk/homedirectory/homeapi.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../manage/static_method.dart';
 import '../values/colors.dart';
@@ -22,10 +24,21 @@ class _servicesDetailsPageState extends State<servicesDetailsPage> {
   late BuildContext ctx;
   var details;
   int _currentIndex = 0;
+  String? userId;
+  getSession()async{
+    SharedPreferences sp = await SharedPreferences.getInstance();
+    setState(() {
+      userId = sp.getString('userid');
+    });
+  }
+
+
+
 
   @override
   void initState() {
     // TODO: implement initState
+    getSession();
     details = widget.data;
     super.initState();
   }
@@ -157,8 +170,12 @@ class _servicesDetailsPageState extends State<servicesDetailsPage> {
                           backgroundColor: Clr().primaryColor,
                         ),
                         onPressed: () {
-                          homeApiAuth()
+                          if(userId != null) {
+                            homeApiAuth()
                               .bookingrequest(ctx, setState, details['id']);
+                          }else{
+                            STM().redirect2page(ctx, const loginPage());
+                          }
                         },
                         child: Text(
                           'Request Booking',

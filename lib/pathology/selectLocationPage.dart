@@ -11,6 +11,7 @@ import 'package:hk/values/styles.dart';
 import 'package:flutter_google_places/flutter_google_places.dart' as loc;
 import 'package:shared_preferences/shared_preferences.dart';
 import '../manage/static_method.dart';
+import 'selecttest.dart';
 import 'slotsSelectionPage.dart';
 
 List<Placemark> addressList = [];
@@ -239,7 +240,7 @@ class _locationPageState extends State<locationPage> {
           slng.toString(),
         );
       });
-      STM().redirect2page(ctx, const slotsSelectionPage());
+      STM().redirect2page(ctx, const selecttest());
       // STM().displayToast(result['message']);
     } else {
       // ignore: prefer_const_constructors
