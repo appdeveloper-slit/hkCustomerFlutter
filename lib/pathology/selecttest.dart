@@ -117,24 +117,29 @@ class _selecttestState extends State<selecttest> {
                                       });
                                     } catch (_) {
                                       setState(() {
-                                        selectedTest = testList[index]['test_id'];
+                                        selectedTest =
+                                            testList[index]['test_id'];
                                       });
                                     }
+                                    print(selectedTest);
                                     setState(() {
                                       price = testList[index]['test_price'];
-                                      selectedName = testList[index]['test_name'];
+                                      selectedName =
+                                          testList[index]['test_name'];
                                     });
                                   },
-                                  child:
-                                      selectedTest == testList[index]['test_id']
-                                          ? Icon(
-                                              Icons.check_box,
-                                              color: Clr().primaryColor,
-                                            )
-                                          : Icon(
-                                              Icons.check_box_outline_blank,
-                                              color: Clr().primaryColor,
-                                            ),
+                                  child: selectedTest ==
+                                          testList[index]['test_id']
+                                              .toString()
+                                              .replaceAll(',', '')
+                                      ? Icon(
+                                          Icons.check_box,
+                                          color: Clr().primaryColor,
+                                        )
+                                      : Icon(
+                                          Icons.check_box_outline_blank,
+                                          color: Clr().primaryColor,
+                                        ),
                                 ),
                                 SizedBox(
                                   width: Dim().d20,

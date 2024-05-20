@@ -1,3 +1,5 @@
+// ignore_for_file: prefer_final_fields
+
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';

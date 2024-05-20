@@ -792,8 +792,12 @@ class STM {
     token,
   }) async {
     SharedPreferences sp = await SharedPreferences.getInstance();
-    AwesomeDialog dialog = STM().loadingDialog(ctx, loadtitle);
-    load == true ? dialog.show() : null;
+    AwesomeDialog dialog = AwesomeDialog(context: ctx);
+    if (loadtitle != null) {
+      AwesomeDialog dialog = STM().loadingDialog(ctx, loadtitle);
+      load == true ? dialog.show() : Container();
+    }
+
     String url = 'https://t25crm.healthians.co.in/api/labhendra/$apiname';
 
     ///checksum process start

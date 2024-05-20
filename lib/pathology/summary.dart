@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:convert';
 
 import 'package:crypto/crypto.dart';
@@ -343,9 +345,7 @@ class _summaryPageState extends State<summaryPage> {
       },
       "package": [
         {
-            "deal_id": [
-                "package_$selectedTest"
-            ]
+          "deal_id": ["package_$selectedTest"]
         },
       ],
       "customer_calling_number": profileData['mobile_no'],
@@ -375,8 +375,7 @@ class _summaryPageState extends State<summaryPage> {
       token: sp.getString('pathotoken'),
     );
     if (result['status'] == true) {
-      // ignore:  use_build_context_synchronously
-      STM().successsDialogWithAffinity(ctx, result['message'],  detailspage(data: body,bookingid: result['booking_id'],));
+      addbokkingApi(result['booking_id']);
     } else if (result['error'] != null) {
       // ignore: use_build_context_synchronously
       STM().errorDialog(ctx, result['error']);
@@ -386,4 +385,57 @@ class _summaryPageState extends State<summaryPage> {
     }
   }
 
+  /// backend laravel required api
+  /// this api use for store bookings in backend or database
+  void addbokkingApi(id) async {
+    SharedPreferences sp = await SharedPreferences.getInstance();
+    var body = {
+      "booking_id": id,
+      "customer_id": sp.getString('userid'),
+      "customer_details": [patientdata],
+      "slot_id": slotData['stm_id'],
+      "slot_time": slotData['slot_time'],
+      "package_details": [
+        {
+          "test_id": selectedTest,
+          "test_name": selectedName,
+          "test_price": price,
+        }
+      ],
+      "customer_calling_number": profileData['mobile_no'],
+      "billing_cust_name": profileData['full_name'],
+      "gender": profileData['gender'].toString()[0].toUpperCase(),
+      "mobile": profileData['mobile_no'],
+      "email": profileData['email'],
+      "latitude": Slat,
+      "longitude": slng,
+      "address": addCtrl.text,
+      "sub_locality": addCtrl.text,
+      "zipcode": addressList[0].postalCode ?? addressList[1].postalCode,
+      "vendor_billing_user_id":
+          "f210f119ff1ac8663ece265b5796e740afe86fdaf60ee9deb05a1d10798b",
+      "payment_option": "cod",
+      "discounted_price": price,
+    };
+    print(body);
+    var result = await STM().allApi(
+      ctx: ctx,
+      apiname: 'create_booking',
+      type: 'post',
+      body: body,
+      load: true,
+      loadtitle: 'Processing...',
+    );
+    if (result['success'] == true) {
+      STM().successsDialogWithAffinity(
+          ctx,
+          result['message'],
+          detailspage(
+            data: result['data'],
+            bookingid: result['data']['booking_id'],
+          ));
+    } else {
+      STM().errorDialog(ctx, result['message']);
+    }
+  }
 }
