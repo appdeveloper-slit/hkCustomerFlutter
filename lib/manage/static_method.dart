@@ -896,7 +896,6 @@ class STM {
     if (nameList.length == 1) {
       charName = nameList[0][0];
     } else {
-      nameList.removeAt(nameList.length - 1);
       charName = nameList[0][0] + nameList[nameList.length - 1][0];
     }
 

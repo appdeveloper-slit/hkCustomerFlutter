@@ -7,6 +7,7 @@ import '../homedirectory/wallet.dart';
 List requestArrayList = [];
 var bookingdetails;
 List statusList = [];
+List pathologyRequestList = [];
 
 class requestAuthApi {
   void getallRequest(ctx, setState, {id}) async {
@@ -125,6 +126,28 @@ class requestAuthApi {
       STM().successsDialogWithAffinity(ctx, result['message'], const Home());
     } else {
       STM().errorDialogWithReplace(ctx, result['message'], const walletPage());
+    }
+  }
+
+  void getpathologyrequest(ctx, setState) async {
+    SharedPreferences sp = await SharedPreferences.getInstance();
+    var body = {
+      'customer_id': sp.getString('userid'),
+    };
+    var result = await STM().allApi(
+      apiname: 'my_requests',
+      body: body,
+      ctx: ctx,
+      load: true,
+      loadtitle: 'Loading...',
+      type: 'post',
+    );
+    if (result['success']) {
+      setState(() {
+        pathologyRequestList = result['data'];
+      });
+    } else {
+      STM().errorDialog(ctx, result['message']);
     }
   }
 }

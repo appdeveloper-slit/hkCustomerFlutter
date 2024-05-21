@@ -2,6 +2,7 @@
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:hk/pathology/detailspage.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -14,7 +15,8 @@ import 'addpatient.dart';
 Map slotData = {};
 
 class slotsSelectionPage extends StatefulWidget {
-  const slotsSelectionPage({super.key});
+  final type;
+  const slotsSelectionPage({super.key, this.type});
 
   @override
   State<slotsSelectionPage> createState() => _slotsSelectionPageState();
@@ -196,7 +198,24 @@ class _slotsSelectionPageState extends State<slotsSelectionPage> {
                               ),
                             ),
                             onPressed: () {
-                              STM().redirect2page(ctx, const addPatinetPage());
+                              if (widget.type == 'reshedule') {
+                                detailsPage.controller.sink.add({
+                                  "id": slotData['stm_id'],
+                                  "time": '${DateFormat('hh:mm a').format(
+                                    DateTime.parse(
+                                      '${slotData['slot_date']} ${slotData['slot_time']}',
+                                    ),
+                                  )} to ${DateFormat('hh:mm a').format(
+                                    DateTime.parse(
+                                      '${slotData['slot_date']} ${slotData['end_time']}',
+                                    ),
+                                  )}',
+                                });
+                                STM().back2Previous(ctx);
+                              } else {
+                                STM()
+                                    .redirect2page(ctx, const addPatinetPage());
+                              }
                             },
                             child: Text(
                               'Next',

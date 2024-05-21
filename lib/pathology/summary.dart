@@ -394,7 +394,16 @@ class _summaryPageState extends State<summaryPage> {
       "customer_id": sp.getString('userid'),
       "customer_details": [patientdata],
       "slot_id": slotData['stm_id'],
-      "slot_time": slotData['slot_time'],
+      "slot_time": '${DateFormat('hh:mm a').format(
+        DateTime.parse(
+          '${slotData['slot_date']} ${slotData['slot_time']}',
+        ),
+      )} to ${DateFormat('hh:mm a').format(
+        DateTime.parse(
+          '${slotData['slot_date']} ${slotData['end_time']}',
+        ),
+      )}',
+      "booking_date": slotData['slot_date'],
       "package_details": [
         {
           "test_id": selectedTest,
