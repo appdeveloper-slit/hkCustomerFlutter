@@ -377,7 +377,7 @@ class _addPatinetPageState extends State<addPatinetPage> {
     }
     if (check) {
       patientdata = {
-        "customer_id": uuid.v4(),
+        "customer_id": STM().getChecksumKey(nameCtrl.text).toString(),
         "customer_name": nameCtrl.text,
         "relation": relValue.toString().toLowerCase(),
         "age": ageCtrl.text,

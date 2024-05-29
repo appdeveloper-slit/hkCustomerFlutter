@@ -1,6 +1,7 @@
 // ignore_for_file: use_build_context_synchronously
 
 import 'dart:async';
+import 'dart:math';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -39,7 +40,9 @@ class detailsPage extends State<detailspage> {
     // TODO: implement initState
     controller.stream.listen((dynamic event) {
       setState(() {
-        reshedulebooking(id: event['id'], time: event['time']);
+        reshedulebooking(
+            id: event['id'], time: event['time'], date: event['date']);
+        print(event['time']);
       });
     });
     Future.delayed(Duration.zero, () {
@@ -449,10 +452,11 @@ class detailsPage extends State<detailspage> {
                       InkWell(
                         onTap: () {
                           STM().redirect2page(
-                              ctx,
-                              const slotsSelectionPage(
-                                type: 'reshedule',
-                              ));
+                            ctx,
+                            const slotsSelectionPage(
+                              type: 'reshedule',
+                            ),
+                          );
                         },
                         child: Align(
                           alignment: Alignment.center,
@@ -475,8 +479,8 @@ class detailsPage extends State<detailspage> {
     SharedPreferences sp = await SharedPreferences.getInstance();
     var body = {
       "booking_id": widget.bookingid,
-      "vendor_billing_user_id": "1234567",
-      "vendor_customer_id": "1234567",
+      "vendor_billing_user_id": widget.data['vendor_billing_user_id'],
+      "vendor_customer_id": widget.data['customer_details'][0]['customer_id'],
       "remarks": "CUSTOMER_CANCELLED"
     };
     var result = await STM().pathologyApi(
@@ -513,13 +517,16 @@ class detailsPage extends State<detailspage> {
     }
   }
 
-  void reshedulebooking({id, time}) async {
+  void reshedulebooking({id, time, date}) async {
     SharedPreferences sp = await SharedPreferences.getInstance();
     var body = {
       "booking_id": widget.bookingid,
       "slot": {"slot_id": id},
       "customers": [
-        {"vendor_customer_id": "ddddddddddddd"}
+        {
+          "vendor_customer_id": widget.data['customer_details'][0]
+              ['customer_id']
+        }
       ],
       "reschedule_reason": "RESCHEDULED TO ANOTHER DATE"
     };
@@ -530,21 +537,23 @@ class detailsPage extends State<detailspage> {
         type: 'post',
         token: sp.getString('pathotoken'));
     if (result['status'] == true) {
-      resheduleApibooking(id: id, time: time);
+      resheduleApibooking(id: id, time: time, date: date);
     } else {
       STM().errorDialog(ctx, result['message']);
     }
   }
 
   /// reshedule api laravel
-  void resheduleApibooking({id, time}) async {
+  void resheduleApibooking({id, time, date}) async {
     SharedPreferences sp = await SharedPreferences.getInstance();
     var body = {
       "booking_id": widget.bookingid,
       "customer_id": sp.getString('userid'),
       "slot_id": id,
-      "slot_time": time
+      "slot_time": time,
+      "booking_date": date
     };
+    print(body);
     var result = await STM().allApi(
       apiname: 'reschedule_booking',
       body: body,

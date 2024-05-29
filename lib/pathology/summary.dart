@@ -10,6 +10,7 @@ import 'package:hk/pathology/slotsSelectionPage.dart';
 import 'package:hk/values/dimens.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:uuid/uuid.dart';
 import '../manage/static_method.dart';
 import '../profilelayout/profileapiauth.dart';
 import '../values/colors.dart';
@@ -28,6 +29,7 @@ class summaryPage extends StatefulWidget {
 class _summaryPageState extends State<summaryPage> {
   late BuildContext ctx;
   TextEditingController addCtrl = TextEditingController();
+  var uuid = const Uuid();
 
   @override
   void initState() {
@@ -348,7 +350,7 @@ class _summaryPageState extends State<summaryPage> {
           "deal_id": ["package_$selectedTest"]
         },
       ],
-      "customer_calling_number": profileData['mobile_no'],
+      "customer_calling_number": patientdata['contact_number'],
       "billing_cust_name": profileData['full_name'],
       "gender": profileData['gender'].toString()[0].toUpperCase(),
       "mobile": profileData['mobile_no'],
@@ -358,8 +360,11 @@ class _summaryPageState extends State<summaryPage> {
       "address": addCtrl.text,
       "sub_locality": addCtrl.text,
       "zipcode": addressList[0].postalCode ?? addressList[1].postalCode,
-      "vendor_billing_user_id":
-          "f210f119ff1ac8663ece265b5796e740afe86fdaf60ee9deb05a1d10798b",
+      "vendor_billing_user_id": patientdata['relation'] == 'self'
+          ? patientdata['customer_id']
+          : STM()
+              .getChecksumKey(profileData['full_name'].toString())
+              .toString(),
       "payment_option": "cod",
       "discounted_price": price,
     };
@@ -411,7 +416,7 @@ class _summaryPageState extends State<summaryPage> {
           "test_price": price,
         }
       ],
-      "customer_calling_number": profileData['mobile_no'],
+      "customer_calling_number": patientdata['contact_number'],
       "billing_cust_name": profileData['full_name'],
       "gender": profileData['gender'].toString()[0].toUpperCase(),
       "mobile": profileData['mobile_no'],
@@ -421,8 +426,9 @@ class _summaryPageState extends State<summaryPage> {
       "address": addCtrl.text,
       "sub_locality": addCtrl.text,
       "zipcode": addressList[0].postalCode ?? addressList[1].postalCode,
-      "vendor_billing_user_id":
-          "f210f119ff1ac8663ece265b5796e740afe86fdaf60ee9deb05a1d10798b",
+      "vendor_billing_user_id": patientdata['relation'] == 'self'
+          ? patientdata['customer_id']
+          : STM().getChecksumKey(profileData['full_name'].toString()),
       "payment_option": "cod",
       "discounted_price": price,
     };

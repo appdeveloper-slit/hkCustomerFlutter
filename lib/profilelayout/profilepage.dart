@@ -579,15 +579,24 @@ class _profileLayPageState extends State<profileLayPage> {
                         child: Column(
                           children: [
                             Text('Enter Mobile Number',
-                                style: nunitaSty()
-                                    .mediumText
-                                    .copyWith(fontWeight: FontWeight.w600)),
+                                style: nunitaSty().mediumText.copyWith(
+                                      fontWeight: FontWeight.w600,
+                                      color: Theme.of(ctx)
+                                                  .colorScheme
+                                                  .primary ==
+                                              Clr().black
+                                          ? Clr().primaryColor
+                                          : Theme.of(ctx).colorScheme.primary,
+                                    )),
                             SizedBox(height: Dim().d20),
                             TextFormField(
                               controller: mobCtrl,
                               maxLength: 10,
                               keyboardType: TextInputType.number,
                               textInputAction: TextInputAction.done,
+                              style: nunitaSty()
+                                  .smalltext
+                                  .copyWith(color: Clr().black),
                               validator: (v) {
                                 if (v!.isEmpty) {
                                   return 'Mobile number is required';
@@ -702,15 +711,22 @@ class _profileLayPageState extends State<profileLayPage> {
                     : Column(
                         children: [
                           Text('Enter OTP',
-                              style: nunitaSty()
-                                  .mediumText
-                                  .copyWith(fontWeight: FontWeight.w600)),
+                              style: nunitaSty().mediumText.copyWith(
+                                    fontWeight: FontWeight.w600,
+                                    color: Theme.of(ctx).colorScheme.primary ==
+                                            Clr().black
+                                        ? Clr().primaryColor
+                                        : Theme.of(ctx).colorScheme.primary,
+                                  )),
                           SizedBox(height: Dim().d20),
                           TextFormField(
                             controller: otpctrl,
                             maxLength: 4,
                             keyboardType: TextInputType.number,
                             textInputAction: TextInputAction.done,
+                            style: nunitaSty()
+                                .smalltext
+                                .copyWith(color: Clr().black),
                             decoration: nunitaSty()
                                 .TextFormFieldOutlineDarkStyle
                                 .copyWith(

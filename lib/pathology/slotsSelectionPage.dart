@@ -210,6 +210,7 @@ class _slotsSelectionPageState extends State<slotsSelectionPage> {
                                       '${slotData['slot_date']} ${slotData['end_time']}',
                                     ),
                                   )}',
+                                  "date": slotData['slot_date'],
                                 });
                                 STM().back2Previous(ctx);
                               } else {

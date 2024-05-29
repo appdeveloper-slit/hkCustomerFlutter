@@ -782,6 +782,13 @@ class STM {
     return digest.toString();
   }
 
+  getChecksumKey(text) {
+    String input = text;
+    var bytes = utf8.encode(input); // Convert the input to bytes
+    var value = sha1.convert(bytes); // Generate the SHA-1 hash
+    return value.toString();
+  }
+
   Future<dynamic> pathologyApi({
     ctx,
     Map<String, dynamic>? body,
@@ -896,6 +903,7 @@ class STM {
     if (nameList.length == 1) {
       charName = nameList[0][0];
     } else {
+      nameList.removeLast();
       charName = nameList[0][0] + nameList[nameList.length - 1][0];
     }
 
