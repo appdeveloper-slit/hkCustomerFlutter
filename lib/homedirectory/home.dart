@@ -377,15 +377,17 @@ class GridItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-          color: Theme.of(context).colorScheme.background,
-          borderRadius: BorderRadius.all(Radius.circular(Dim().d12)),
-          boxShadow: [
-            BoxShadow(
-                blurRadius: 1,
-                spreadRadius: 1,
-                color: Colors.black12,
-                offset: Offset(0, 1))
-          ]),
+        color: Theme.of(context).colorScheme.background,
+        borderRadius: BorderRadius.all(Radius.circular(Dim().d12)),
+        boxShadow: const [
+          BoxShadow(
+            blurRadius: 1,
+            spreadRadius: 1,
+            color: Colors.black12,
+            offset: Offset(0, 1),
+          )
+        ],
+      ),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
@@ -398,13 +400,15 @@ class GridItem extends StatelessWidget {
           SizedBox(
             height: Dim().d12,
           ),
-          Text(name,
-              textAlign: TextAlign.center,
-              maxLines: 2,
-              style: nunitaSty().microText.copyWith(
-                    fontWeight: FontWeight.w400,
-                    color: Theme.of(context).colorScheme.primary,
-                  )),
+          Text(
+            name,
+            textAlign: TextAlign.center,
+            maxLines: 2,
+            style: nunitaSty().microText.copyWith(
+                  fontWeight: FontWeight.w400,
+                  color: Theme.of(context).colorScheme.primary,
+                ),
+          ),
         ],
       ),
     );
