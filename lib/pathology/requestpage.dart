@@ -66,7 +66,7 @@ class _pathorequestPageState extends State<pathorequestPage> {
       child: Scaffold(
         backgroundColor: Theme.of(ctx).colorScheme.background,
         appBar: AppBar(
-          elevation: 2,
+          surfaceTintColor: Clr().transparent,
           shadowColor: Clr().black,
           backgroundColor: Theme.of(ctx).colorScheme.background,
           leading: InkWell(

@@ -44,13 +44,18 @@ class _locationPageState extends State<locationPage> {
     return Scaffold(
       backgroundColor: Theme.of(ctx).colorScheme.background,
       appBar: AppBar(
-        leading: Icon(
-          Icons.arrow_back,
-          color: Theme.of(ctx).colorScheme.primary == Clr().black
-              ? Clr().primaryColor
-              : Theme.of(ctx).colorScheme.primary,
+        surfaceTintColor: Clr().transparent,
+        leading: InkWell(
+          onTap: (){
+            STM().back2Previous(ctx);
+          },
+          child: Icon(
+            Icons.arrow_back,
+            color: Theme.of(ctx).colorScheme.primary == Clr().black
+                ? Clr().primaryColor
+                : Theme.of(ctx).colorScheme.primary,
+          ),
         ),
-        elevation: 1,
         backgroundColor: Theme.of(ctx).colorScheme.background,
         title: Text(
           'Select Location',
@@ -108,6 +113,7 @@ class _locationPageState extends State<locationPage> {
                             strictbounds: false,
                             types: [],
                             decoration: InputDecoration(
+                                border: InputBorder.none,
                                 hintStyle: nunitaSty().smalltext.copyWith(
                                     fontWeight: FontWeight.w400,
                                     color: Theme.of(ctx).colorScheme.primary),
@@ -115,7 +121,9 @@ class _locationPageState extends State<locationPage> {
                                 fillColor: Theme.of(ctx).colorScheme.background,
                                 filled: true),
                             logo: Container(
-                              height: 0,
+                              height: 10,
+                              width: double.infinity,
+                              color: Clr().white,
                             ),
                             components: [] // you can determine search for just one country
                             ).then((v) async {

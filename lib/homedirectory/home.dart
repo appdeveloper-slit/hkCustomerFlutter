@@ -12,6 +12,7 @@ import 'package:hk/values/dimens.dart';
 import 'package:hk/values/styles.dart';
 import 'package:intl/intl.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../pathology/selectLocationPage.dart';
@@ -48,6 +49,23 @@ class _HomeState extends State<Home> {
       sp.getString('userid'),
       DateFormat('yyyy/MM/dd HH:mm:ss').format(DateTime.now()),
     ]);
+  }
+
+  // ignore: prefer_final_fields
+  RefreshController _refreshController =
+      RefreshController(initialRefresh: false);
+
+  Future<void> _refreshData() async {
+    SharedPreferences sp = await SharedPreferences.getInstance();
+    await Future.delayed(const Duration(seconds: 2));
+    setState(() {
+      homeApiAuth().homeApi(ctx, setState, [
+        OneSignal.User.pushSubscription.id,
+        sp.getString('userid'),
+        DateFormat('yyyy/MM/dd HH:mm:ss').format(DateTime.now()),
+      ]);
+      _refreshController.refreshCompleted();
+    });
   }
 
   @override
@@ -134,199 +152,136 @@ class _HomeState extends State<Home> {
             )
           ],
         ),
-        body: SingleChildScrollView(
-          padding: EdgeInsets.symmetric(horizontal: Dim().d12),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              CarouselSlider(
-                options: CarouselOptions(
-                  aspectRatio: 16 / 9,
-                  viewportFraction: 0.9,
-                  autoPlay: true,
-                  onPageChanged: (index, reason) {
-                    setState(() {
-                      _currentIndex = index;
-                    });
+        body: SmartRefresher(
+          onRefresh: _refreshData,
+          controller: _refreshController,
+          child: SingleChildScrollView(
+            padding: EdgeInsets.symmetric(horizontal: Dim().d12),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                CarouselSlider(
+                  options: CarouselOptions(
+                    aspectRatio: 16 / 9,
+                    viewportFraction: 0.9,
+                    autoPlay: true,
+                    onPageChanged: (index, reason) {
+                      setState(() {
+                        _currentIndex = index;
+                      });
+                    },
+                  ),
+                  items: sliderList.map((url) {
+                    return Builder(
+                      builder: (BuildContext context) {
+                        return Container(
+                          width: MediaQuery.of(context).size.width,
+                          margin: const EdgeInsets.symmetric(horizontal: 5.0),
+                          decoration: const BoxDecoration(
+                            color: Colors.grey,
+                          ),
+                          child: Image.network(
+                            url['image_path'],
+                            fit: BoxFit.cover,
+                          ),
+                        );
+                      },
+                    );
+                  }).toList(),
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: _buildDots(),
+                ),
+                SizedBox(
+                  height: Dim().d20,
+                ),
+                GridView.builder(
+                  itemCount: serviceArryList.length,
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  // ignore: prefer_const_constructors
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 3,
+                    crossAxisSpacing: 12.0,
+                    mainAxisSpacing: 12.0,
+                  ),
+                  itemBuilder: (BuildContext context, int index) {
+                    return InkWell(
+                      onTap: () {
+                        serviceArryList[index]['name'] == 'Pathology'
+                            ? userId != null
+                                ? STM().redirect2page(ctx, const locationPage())
+                                : STM().redirect2page(ctx, const loginPage())
+                            : STM().redirect2page(
+                                ctx,
+                                servicesDetailsPage(
+                                  data: serviceArryList[index],
+                                ),
+                              );
+                      },
+                      child: GridItem(
+                        name: serviceArryList[index]['name'],
+                        image: serviceArryList[index]['image_path'],
+                      ),
+                    );
                   },
                 ),
-                items: sliderList.map((url) {
-                  return Builder(
-                    builder: (BuildContext context) {
-                      return Container(
-                        width: MediaQuery.of(context).size.width,
-                        margin: const EdgeInsets.symmetric(horizontal: 5.0),
-                        decoration: const BoxDecoration(
-                          color: Colors.grey,
-                        ),
-                        child: Image.network(
-                          url['image_path'],
-                          fit: BoxFit.cover,
-                        ),
-                      );
-                    },
-                  );
-                }).toList(),
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: _buildDots(),
-              ),
-              SizedBox(
-                height: Dim().d20,
-              ),
-              GridView.builder(
-                itemCount: serviceArryList.length,
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                // ignore: prefer_const_constructors
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 3,
-                  crossAxisSpacing: 12.0,
-                  mainAxisSpacing: 12.0,
+                SizedBox(
+                  height: Dim().d20,
                 ),
-                itemBuilder: (BuildContext context, int index) {
-                  return InkWell(
-                    onTap: () {
-                      serviceArryList[index]['name'] == 'Pathology'
-                          ? userId != null
-                              ? STM().redirect2page(ctx, const locationPage())
-                              : STM().redirect2page(ctx, const loginPage())
-                          : STM().redirect2page(
-                              ctx,
-                              servicesDetailsPage(
-                                data: serviceArryList[index],
-                              ),
-                            );
-                    },
-                    child: GridItem(
-                      name: serviceArryList[index]['name'],
-                      image: serviceArryList[index]['image_path'],
-                    ),
-                  );
-                },
-              ),
-              SizedBox(
-                height: Dim().d20,
-              ),
-              InkWell(
-                onTap: () {
-                  STM().redirect2page(
-                    ctx,
-                    const healthtipsPage(),
-                  );
-                },
-                child: Container(
-                  height: Dim().d56,
-                  width: double.infinity,
-                  padding: EdgeInsets.zero,
-                  margin: EdgeInsets.zero,
-                  decoration: BoxDecoration(
-                      color: Clr().white,
-                      border: Border.all(
-                        color: Colors.black26,
-                        width: 0.6,
-                      ),
-                      image: const DecorationImage(
-                        image: AssetImage('assets/tips.png'),
-                        fit: BoxFit.fitWidth,
-                      )),
-                  child: Padding(
-                    padding: EdgeInsets.symmetric(horizontal: Dim().d12),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          'Health Tips',
-                          style: poppinsSty().largeText.copyWith(
-                                fontWeight: FontWeight.w400,
-                              ),
+                InkWell(
+                  onTap: () {
+                    STM().redirect2page(
+                      ctx,
+                      const healthtipsPage(),
+                    );
+                  },
+                  child: Container(
+                    height: Dim().d56,
+                    width: double.infinity,
+                    padding: EdgeInsets.zero,
+                    margin: EdgeInsets.zero,
+                    decoration: BoxDecoration(
+                        color: Clr().white,
+                        border: Border.all(
+                          color: Colors.black26,
+                          width: 0.6,
                         ),
-                        // ignore: prefer_const_constructors
-                        Icon(
-                          Icons.arrow_forward_ios,
-                          color: Colors.pink,
-                          size: 20.0,
-                          weight: 330.0,
-                        )
-                      ],
+                        image: const DecorationImage(
+                          image: AssetImage('assets/tips.png'),
+                          fit: BoxFit.fitWidth,
+                        )),
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(horizontal: Dim().d12),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            'Health Tips',
+                            style: poppinsSty().largeText.copyWith(
+                                  fontWeight: FontWeight.w400,
+                                ),
+                          ),
+                          // ignore: prefer_const_constructors
+                          Icon(
+                            Icons.arrow_forward_ios,
+                            color: Colors.pink,
+                            size: 20.0,
+                            weight: 330.0,
+                          )
+                        ],
+                      ),
                     ),
                   ),
                 ),
-              ),
-              SizedBox(
-                height: Dim().d20,
-              ),
-              Align(
-                alignment: Alignment.center,
-                child: Text(
-                  'Testmonials',
-                  textAlign: TextAlign.center,
-                  style: nunitaSty().mediumText.copyWith(
-                        color: Theme.of(ctx).colorScheme.primary,
-                        fontWeight: FontWeight.w600,
-                      ),
+                SizedBox(
+                  height: Dim().d20,
                 ),
-              ),
-              SizedBox(
-                height: Dim().d12,
-              ),
-              GridView.builder(
-                itemCount: videoList.length,
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                // ignore: prefer_const_constructors
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
-                  crossAxisSpacing: 8.0,
-                  mainAxisSpacing: 8.0,
-                ),
-                itemBuilder: (BuildContext context, int index) {
-                  return videoItem(
-                    video: videoList[index]['video_path'],
-                    image: videoList[index]['image_path'],
-                  );
-                },
-              ),
-              SizedBox(
-                height: Dim().d20,
-              ),
-              Text(
-                'FAQs',
-                textAlign: TextAlign.center,
-                style: nunitaSty().mediumText.copyWith(
-                      color: Theme.of(ctx).colorScheme.primary,
-                      fontWeight: FontWeight.w600,
-                    ),
-              ),
-              SizedBox(
-                height: Dim().d12,
-              ),
-              ListView.builder(
-                itemCount: faqList.length,
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                itemBuilder: (context, index) {
-                  return faqWidget(
-                    ans: faqList[index]['ans'],
-                    qt: faqList[index]['que'],
-                    index: index,
-                  );
-                },
-              ),
-              SizedBox(
-                height: Dim().d12,
-              ),
-              Align(
-                alignment: Alignment.center,
-                child: InkWell(
-                  onTap: () {
-                    setState(() {
-                      STM().openWeb('https://www.hkwhcs.in/faqs');
-                    });
-                  },
+                Align(
+                  alignment: Alignment.center,
                   child: Text(
-                    'View All',
+                    'Testmonials',
                     textAlign: TextAlign.center,
                     style: nunitaSty().mediumText.copyWith(
                           color: Theme.of(ctx).colorScheme.primary,
@@ -334,11 +289,78 @@ class _HomeState extends State<Home> {
                         ),
                   ),
                 ),
-              ),
-              SizedBox(
-                height: Dim().d12,
-              ),
-            ],
+                SizedBox(
+                  height: Dim().d12,
+                ),
+                GridView.builder(
+                  itemCount: videoList.length,
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  // ignore: prefer_const_constructors
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2,
+                    crossAxisSpacing: 8.0,
+                    mainAxisSpacing: 8.0,
+                  ),
+                  itemBuilder: (BuildContext context, int index) {
+                    return videoItem(
+                      video: videoList[index]['video_path'],
+                      image: videoList[index]['image_path'],
+                    );
+                  },
+                ),
+                SizedBox(
+                  height: Dim().d20,
+                ),
+                Text(
+                  'FAQs',
+                  textAlign: TextAlign.center,
+                  style: nunitaSty().mediumText.copyWith(
+                        color: Theme.of(ctx).colorScheme.primary,
+                        fontWeight: FontWeight.w600,
+                      ),
+                ),
+                SizedBox(
+                  height: Dim().d12,
+                ),
+                ListView.builder(
+                  itemCount: faqList.length,
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  itemBuilder: (context, index) {
+                    return faqWidget(
+                      ans: faqList[index]['ans'],
+                      qt: faqList[index]['que'],
+                      index: index,
+                    );
+                  },
+                ),
+                SizedBox(
+                  height: Dim().d12,
+                ),
+                Align(
+                  alignment: Alignment.center,
+                  child: InkWell(
+                    onTap: () {
+                      setState(() {
+                        STM().openWeb('https://www.hkwhcs.in/faqs');
+                      });
+                    },
+                    child: Text(
+                      'View All',
+                      textAlign: TextAlign.center,
+                      style: nunitaSty().mediumText.copyWith(
+                            color: Theme.of(ctx).colorScheme.primary,
+                            fontWeight: FontWeight.w600,
+                          ),
+                    ),
+                  ),
+                ),
+                SizedBox(
+                  height: Dim().d12,
+                ),
+              ],
+            ),
           ),
         ),
       ),
