@@ -321,8 +321,7 @@ class _pathorequestPageState extends State<pathorequestPage> {
         case "BS009":
           setState(() {
             bookingstatus = 'Report Generated';
-            bookingdescription =
-                "Report Generated from the Lab but pending for verification";
+            bookingdescription = "Report Generated from the Lab but pending for verification";
             requestList.add(bookingstatus);
           });
           break;
