@@ -31,7 +31,7 @@ class _addPatinetPageState extends State<addPatinetPage> {
     'Parent',
     'Grand parent',
     'Sibling',
-    'friend',
+    'Friend',
     'Native',
     'Neighbour',
     'Colleague',
@@ -49,14 +49,19 @@ class _addPatinetPageState extends State<addPatinetPage> {
     return Scaffold(
       backgroundColor: Theme.of(ctx).colorScheme.background,
       appBar: AppBar(
-        elevation: 2,
+        surfaceTintColor: Clr().transparent,
         shadowColor: Clr().black,
         backgroundColor: Theme.of(ctx).colorScheme.background,
-        leading: Icon(
-          Icons.arrow_back,
-          color: Theme.of(ctx).colorScheme.primary == Clr().black
-              ? Clr().primaryColor
-              : Theme.of(ctx).colorScheme.primary,
+        leading: InkWell(
+          onTap: () {
+            STM().back2Previous(ctx);
+          },
+          child: Icon(
+            Icons.arrow_back,
+            color: Theme.of(ctx).colorScheme.primary == Clr().black
+                ? Clr().primaryColor
+                : Theme.of(ctx).colorScheme.primary,
+          ),
         ),
         title: Text(
           'Add Patient',
@@ -96,7 +101,7 @@ class _addPatinetPageState extends State<addPatinetPage> {
                   decoration: nunitaSty().TextFormFieldGreyDarkStyle.copyWith(
                         fillColor: Clr().white,
                         filled: true,
-                        hintText: 'Enter a name',
+                        hintText: 'Enter name',
                         hintStyle: nunitaSty().smalltext.copyWith(
                               color: Clr().hintColor,
                             ),
@@ -145,7 +150,7 @@ class _addPatinetPageState extends State<addPatinetPage> {
                             color: Theme.of(ctx).colorScheme.primary,
                           ),
                       hint: Text(
-                        'Select a relation',
+                        'Select relation',
                         style: nunitaSty().smalltext.copyWith(
                               fontWeight: FontWeight.w400,
                               color: Clr().hintColor,
@@ -199,7 +204,7 @@ class _addPatinetPageState extends State<addPatinetPage> {
                   decoration: nunitaSty().TextFormFieldGreyDarkStyle.copyWith(
                         fillColor: Clr().white,
                         filled: true,
-                        hintText: 'Enter a age (Age range between 5-120)',
+                        hintText: 'Enter age (Age range between 5-120)',
                         hintStyle: nunitaSty().smalltext.copyWith(
                               color: Clr().hintColor,
                             ),
@@ -207,6 +212,9 @@ class _addPatinetPageState extends State<addPatinetPage> {
                   validator: (value) {
                     if (value!.isEmpty) {
                       return 'Age is required';
+                    }
+                    if (int.parse(value.toString()) < 5) {
+                      return 'Age must be greater than 5';
                     }
                   },
                 ),
@@ -247,7 +255,7 @@ class _addPatinetPageState extends State<addPatinetPage> {
                             color: Theme.of(ctx).colorScheme.primary,
                           ),
                       hint: Text(
-                        'Select a gender',
+                        'Select gender',
                         style: nunitaSty().smalltext.copyWith(
                               fontWeight: FontWeight.w400,
                               color: Clr().hintColor,
@@ -304,7 +312,7 @@ class _addPatinetPageState extends State<addPatinetPage> {
                         counterText: "",
                         fillColor: Clr().white,
                         filled: true,
-                        hintText: 'Enter a contact number',
+                        hintText: 'Enter contact number',
                         hintStyle: nunitaSty().smalltext.copyWith(
                               color: Clr().hintColor,
                             ),
@@ -386,6 +394,7 @@ class _addPatinetPageState extends State<addPatinetPage> {
       };
       print(patientdata);
       print(slotData);
+      STM().displayToast('Patient Added');
       STM().redirect2page(ctx, const summaryPage());
     }
   }

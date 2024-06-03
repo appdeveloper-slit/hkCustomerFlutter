@@ -69,21 +69,21 @@ android {
             storePassword keystoreProperties['storePassword']
         }
     }
-    // buildTypes {
-    //     release {
-    //         signingConfig signingConfigs.release
-    //     }
-    // }
-     buildTypes {
+    buildTypes {
         release {
             signingConfig signingConfigs.release
-            minifyEnabled true
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-        }
-        debug {
-            signingConfig signingConfigs.debug
         }
     }
+    //  buildTypes {
+    //     release {
+    //         signingConfig signingConfigs.release
+    //         minifyEnabled true
+    //         proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+    //     }
+    //     debug {
+    //         signingConfig signingConfigs.debug
+    //     }
+    // }
 }
 
 flutter {

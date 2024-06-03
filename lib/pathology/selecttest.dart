@@ -39,13 +39,18 @@ class _selecttestState extends State<selecttest> {
     return Scaffold(
       backgroundColor: Theme.of(ctx).colorScheme.background,
       appBar: AppBar(
-        leading: Icon(
-          Icons.arrow_back,
-          color: Theme.of(ctx).colorScheme.primary == Clr().black
-              ? Clr().primaryColor
-              : Theme.of(ctx).colorScheme.primary,
+        surfaceTintColor: Clr().transparent,
+        leading: InkWell(
+           onTap: (){
+            STM().back2Previous(ctx);
+          },
+          child: Icon(
+            Icons.arrow_back,
+            color: Theme.of(ctx).colorScheme.primary == Clr().black
+                ? Clr().primaryColor
+                : Theme.of(ctx).colorScheme.primary,
+          ),
         ),
-        elevation: 1,
         backgroundColor: Theme.of(ctx).colorScheme.background,
         title: Text(
           'Select Test',

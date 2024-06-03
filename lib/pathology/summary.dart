@@ -45,14 +45,19 @@ class _summaryPageState extends State<summaryPage> {
     return Scaffold(
       backgroundColor: Theme.of(ctx).colorScheme.background,
       appBar: AppBar(
-        elevation: 2,
+        surfaceTintColor: Clr().transparent,
         shadowColor: Clr().black,
         backgroundColor: Theme.of(ctx).colorScheme.background,
-        leading: Icon(
-          Icons.arrow_back,
-          color: Theme.of(ctx).colorScheme.primary == Clr().black
-              ? Clr().primaryColor
-              : Theme.of(ctx).colorScheme.primary,
+        leading: InkWell(
+          onTap: () {
+            STM().back2Previous(ctx);
+          },
+          child: Icon(
+            Icons.arrow_back,
+            color: Theme.of(ctx).colorScheme.primary == Clr().black
+                ? Clr().primaryColor
+                : Theme.of(ctx).colorScheme.primary,
+          ),
         ),
         title: Text(
           'Summary',
@@ -205,6 +210,48 @@ class _summaryPageState extends State<summaryPage> {
                     height: Dim().d24,
                   ),
                   Text(
+                    'Selected Test',
+                    style: nunitaSty().largeText.copyWith(
+                          fontWeight: FontWeight.w500,
+                          color: Theme.of(ctx).colorScheme.primary,
+                        ),
+                  ),
+                  SizedBox(
+                    height: Dim().d12,
+                  ),
+                  Container(
+                    padding: EdgeInsets.all(Dim().d12),
+                    decoration: BoxDecoration(
+                      color: Clr().white,
+                      boxShadow: const [
+                        BoxShadow(
+                          blurRadius: 5,
+                          spreadRadius: 1,
+                          color: Colors.black12,
+                        )
+                      ],
+                      borderRadius: BorderRadius.all(
+                        Radius.circular(Dim().d12),
+                      ),
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          selectedName,
+                          style: nunitaSty().mediumText,
+                        ),
+                        Text(
+                          '₹ $price',
+                          style: nunitaSty().mediumText,
+                        ),
+                      ],
+                    ),
+                  ),
+                  SizedBox(
+                    height: Dim().d24,
+                  ),
+                  Text(
                     'Enter Full Address',
                     style: nunitaSty().largeText.copyWith(
                           fontWeight: FontWeight.w500,
@@ -263,16 +310,36 @@ class _summaryPageState extends State<summaryPage> {
                         Radius.circular(Dim().d12),
                       ),
                     ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    child: Column(
                       children: [
-                        Text(
-                          'Total',
-                          style: nunitaSty().mediumText,
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              'Test Charges',
+                              style: nunitaSty().mediumText,
+                            ),
+                            Text(
+                              '₹ $price',
+                              style: nunitaSty().mediumText,
+                            ),
+                          ],
                         ),
-                        Text(
-                          '₹ $price',
-                          style: nunitaSty().mediumText,
+                        Divider(
+                          color: Color(0xffCECECE).withOpacity(0.5),
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              'Total',
+                              style: nunitaSty().mediumText,
+                            ),
+                            Text(
+                              '₹ $price',
+                              style: nunitaSty().mediumText,
+                            ),
+                          ],
                         ),
                       ],
                     ),

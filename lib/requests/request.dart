@@ -53,7 +53,7 @@ class _requestPageState extends State<requestPage> {
             ? Clr().white
             : Theme.of(ctx).colorScheme.background,
         // shadowColor: Colors.black12,
-        elevation: 2,
+        surfaceTintColor: Clr().transparent,
         leading: InkWell(
           onTap: () {
             STM().back2Previous(ctx);
