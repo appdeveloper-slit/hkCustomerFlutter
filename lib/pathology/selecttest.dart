@@ -84,7 +84,7 @@ class _selecttestState extends State<selecttest> {
                     ],
                     borderRadius: BorderRadius.all(
                       Radius.circular(Dim().d12),
-                    )),
+                    ),),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [

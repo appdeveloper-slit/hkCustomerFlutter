@@ -2,6 +2,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:double_back_to_close/double_back_to_close.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:hk/auth/login.dart';
 import 'package:hk/homedirectory/homeapi.dart';
@@ -14,7 +15,6 @@ import 'package:intl/intl.dart';
 import 'package:onesignal_flutter/onesignal_flutter.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
 import '../pathology/selectLocationPage.dart';
 import 'healthtips.dart';
 import 'notificationpage.dart';
@@ -47,7 +47,7 @@ class _HomeState extends State<Home> {
     homeApiAuth().homeApi(ctx, setState, [
       OneSignal.User.pushSubscription.id,
       sp.getString('userid'),
-      DateFormat('yyyy/MM/dd HH:mm:ss').format(DateTime.now()),
+      sp.getString('date')
     ]);
   }
 
@@ -62,7 +62,7 @@ class _HomeState extends State<Home> {
       homeApiAuth().homeApi(ctx, setState, [
         OneSignal.User.pushSubscription.id,
         sp.getString('userid'),
-        DateFormat('yyyy/MM/dd HH:mm:ss').format(DateTime.now()),
+        sp.getString('date'),
       ]);
       _refreshController.refreshCompleted();
     });
@@ -89,6 +89,7 @@ class _HomeState extends State<Home> {
             setState: setState,
             userExits: userId),
         appBar: AppBar(
+          forceMaterialTransparency: true,
           backgroundColor: Theme.of(ctx).colorScheme.background == Clr().white
               ? Clr().white
               : Theme.of(ctx).colorScheme.background,
@@ -132,23 +133,52 @@ class _HomeState extends State<Home> {
                 ),
               ),
             ),
-            InkWell(
-              onTap: () {
-                if (userId != null) {
-                  STM().redirect2page(ctx, const notificationPage());
-                } else {
-                  STM().redirect2page(ctx, const loginPage());
-                }
-              },
-              child: Padding(
-                padding: EdgeInsets.only(right: Dim().d16),
-                child: Icon(
-                  Icons.notifications_sharp,
-                  color: Theme.of(ctx).colorScheme.primary == Clr().white
-                      ? Clr().white
-                      : Clr().primaryColor,
+            Stack(
+              children: [
+                InkWell(
+                  onTap: () {
+                    if (userId != null) {
+                      STM().redirect2page(ctx, const notificationPage());
+                    } else {
+                      STM().redirect2page(ctx, const loginPage());
+                    }
+                  },
+                  child: Padding(
+                    padding: EdgeInsets.only(right: Dim().d16),
+                    child: Icon(
+                      Icons.notifications_sharp,
+                      color: Theme.of(ctx).colorScheme.primary == Clr().white
+                          ? Clr().white
+                          : Clr().primaryColor,
+                    ),
+                  ),
                 ),
-              ),
+
+                checkNotification != '0'
+                      ? Positioned(
+                          bottom: 1,
+                          right: 15,
+                          child: Container(
+                            height: Dim().d14,
+                            width: Dim().d14,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: Clr().red,
+                            ),
+                            child: Center(
+                              child: Text(
+                                checkNotification ?? '0',
+                                style: nunitaSty()
+                                    .microText
+                                    .copyWith(color: Clr().white,fontSize: Dim().d8),
+                              ),
+                            ),
+                          ),
+                        )
+                      : Container(
+                        height: 0,
+                      )
+              ],
             )
           ],
         ),

@@ -11,6 +11,7 @@ List notiList = [];
 var checkUserStaus, checkUpdate;
 var balance;
 List walletHList = [];
+var checkNotification;
 
 class homeApiAuth {
   void homeApi(ctx, setState, list) async {
@@ -36,6 +37,8 @@ class homeApiAuth {
         checkUserStaus = result['is_active'];
         checkUpdate = result['update_type'];
         tipsList = result['tips_array'];
+        checkNotification = result['notification_count'];
+        print(result['notification_count']);
       });
     } else {
       STM().errorDialog(ctx, result['message']);
