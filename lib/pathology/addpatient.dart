@@ -392,8 +392,6 @@ class _addPatinetPageState extends State<addPatinetPage> {
         "gender": ageValue.toString()[0],
         "contact_number": numCtrl.text,
       };
-      print(patientdata);
-      print(slotData);
       STM().displayToast('Patient Added');
       STM().redirect2page(ctx, const summaryPage());
     }
